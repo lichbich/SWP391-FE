@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import Home from "../views/Home.vue";
 import Dashboard from "../views/Dashboard.vue";
 import ShopView from "../views/ShopView.vue"
 import Tables from "../views/Tables.vue";
@@ -13,7 +14,12 @@ const routes = [
   {
     path: "/",
     name: "/",
-    redirect: "/dashboard-default",
+    redirect: "/home",
+  },
+  {
+    path: "/home",
+    name: "Home",
+    component: Home,
   },
   {
     path: "/dashboard-default",
