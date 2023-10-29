@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import store from "./store";
 import router from "./router";
+import ToastPlugin from "./toastPlugin";
 import "./assets/css/nucleo-icons.css";
 import "./assets/css/nucleo-svg.css";
 // import "ant-design-vue/dist/reset.css";
@@ -17,5 +18,6 @@ const app = createApp(App);
 // app.use(Table)
 app.use(store);
 app.use(router);
+app.use(ToastPlugin);
 app.use(ArgonDashboard);
 app.mount("#app");

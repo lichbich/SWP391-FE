@@ -6,15 +6,17 @@
 
 // Container that the modal scrolls within
 .modal {
+  display: flex;
+  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
-  z-index: $zindex-modal;
-  display: none;
+  z-index: 100000;
   width: 100%;
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
+  background-color: rgba(0,0,0,.5);
   // Prevent Chrome on Windows from adding a focus outline. For details, see
   // https://github.com/twbs/bootstrap/pull/10951.
   outline: 0;

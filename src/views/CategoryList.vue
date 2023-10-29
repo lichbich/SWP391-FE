@@ -2,36 +2,25 @@
   <div class="py-4 container-fluid">
     <div class=" row">
       <div class="col-12">
-        <category-table></category-table>
+        <category-table ref="categoryTable" @onAddNew="onOpenAddNew" @onEdit="onEdit"></category-table>
       </div>
     </div>
-    <!-- <div class="mt-4 row">
-      <div class="col-12">
-        <projects-table />
-      </div>
-    </div> -->
   </div>
 
   <!-- Modal -->
-  <div v-if="showModal" class="modal fade mt-3 pt-2" id="staticBackdrop1" data-bs-backdrop="static"
-    style="display: block; opacity: unset">
+  <div v-if="showModal" class="modal" id="staticBackdrop1" data-bs-backdrop="static">
     <div class="modal-dialog">
-      <div class="modal-content">
+      <div class="modal-content" style="min-width: 500px">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Product</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form>
-            <div class="mb-3">
-              <label class="col-form-label">Product ID</label>
+          <form class="needs-validation">
+            <div class="mb-3 form-group">
+              <label class="col-form-label">Category Name</label>
               <input type="text" class="form-control" v-model="item.categoryName">
             </div>
-            <div class="mb-3">
-              <label class="col-form-label">Product Name</label>
-              <input type="text" class="form-control" v-model="item.categoryID">
-            </div>
-            
           </form>
         </div>
         <div class="modal-footer">
@@ -45,8 +34,7 @@
 
 <script>
 import CategoryTable from "./components/CategoryTable.vue";
-// import ProjectsTable from "./components/ProjectsTable.vue";
-import axios from "axios";
+import http from "@/axios";
 export default {
   name: "CategoryList",
   components: {
@@ -56,8 +44,7 @@ export default {
   data() {
     return {
       item:{
-        categoryName: '',
-        categoryID: ''
+        categoryName: ''
       },
       showModal: false
     };
@@ -65,20 +52,27 @@ export default {
   methods: {
     async onSave() {
       try {
-        const res = await axios.post('http://localhost:8080/api/v0_01/category/add', this.item)
-        await this.$refs.categoryTable.getAllCategory()
+        await http.post(`${process.env.VUE_APP_API}/api/v0_01/category/add`, this.item);
+        await this.$refs.categoryTable.getAllCategory();
         this.showModal = false;
-        console.log(res);
+        this.$toast("Create successfully", true);
       } catch (error) {
-        console.log(error);
+        this.$toast("Create failure", false);
       }
     },
     onOpenAddNew() {
       this.showModal = true
     },
     onCloseAddNew() {
+      this.item = {
+        categoryName: ''
+      }
       this.showModal = false;
     },
+    onEdit(item){
+      this.item = Object.assign({}, item);
+      this.showModal = true
+    }
   }
 
 };

@@ -16,11 +16,15 @@ export default createStore({
     showNavbar: true,
     showFooter: true,
     showMain: true,
-    layout: "default"
+    layout: "default",
+    loading: false
   },
   mutations: {
     toggleConfigurator(state) {
       state.showConfig = !state.showConfig;
+    },
+    setLoading(state, val) {
+      state.loading = val;
     },
     navbarMinimize(state) {
       const sidenav_show = document.querySelector(".g-sidenav-show");
@@ -51,5 +55,7 @@ export default createStore({
       commit("sidebarType", payload);
     }
   },
-  getters: {}
+  getters: {
+    loading: (state) => state.loading
+  }
 });

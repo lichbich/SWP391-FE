@@ -32,18 +32,20 @@
         this.$store.state.hideConfigButton ? 'd-none' : ''
       ]"
     /> -->
+    <loading :loading="loading"/>
   </main>
 </template>
 <script>
 import Sidenav from "./examples/Sidenav";
-// import Configurator from "@/examples/Configurator.vue";
 import Navbar from "@/examples/Navbars/Navbar.vue";
 import AppFooter from "@/examples/Footer.vue";
 import { mapMutations } from "vuex";
+import Loading from "@/components/Loading";
 
 export default {
   name: "App",
   components: {
+    Loading,
     Sidenav,
     // Configurator,
     Navbar,
@@ -63,6 +65,9 @@ export default {
           .isAbsolute,
         "px-0 mx-4": !this.$store.state.isAbsolute
       };
+    },
+    loading() {
+      return this.$store.getters.loading;
     }
   },
   beforeMount() {
