@@ -75,3 +75,15 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+.error-message {
+  height: 20px;
+  color: red;
+  font-size: 13px;
+}
+
+.input-require::after{
+    content: '*';
+    color: red;
+}
+</style>

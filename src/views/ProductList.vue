@@ -18,24 +18,25 @@
             <div class="modal-body">
               <form>
                 <div class="mb-3">
-                  <label class="col-form-label">Product Name</label>
-                  <input type="text" class="form-control" v-model="item.productName" required>
+                  <label class="col-form-label input-require">Product Name</label>
+                  <input type="text" class="form-control" v-model="item.productName">
+                  <div class="error-message">{{ v.productName.$errors[0]?.$message }}</div>
                 </div>
                 <div class="mb-3">
-                  <label class="col-form-label">Price</label>
-                  <input type="text" class="form-control" v-model="item.price" required>
+                  <label class="col-form-label input-require">Price</label>
+                  <input type="text" class="form-control" v-model="item.price">
+                  <div class="error-message">{{ v.price.$errors[0]?.$message }}</div>
                 </div>
                 <div class="mb-3">
-                  <label class="col-form-label">Quantity</label>
-                  <input type="text" class="form-control" v-model="item.quantity" required>
+                  <label class="col-form-label input-require">Quantity</label>
+                  <input type="text" class="form-control" v-model="item.quantity">
+                  <div class="error-message">{{ v.quantity.$errors[0]?.$message }}</div>
                 </div>
                 <div class="mb-3">
                   <label class="col-form-label">Status</label>
-                  <select class="form-select" aria-label="Default select example" v-model="item.status" required>
-                    <option selected>Select status</option>
+                  <select class="form-select" aria-label="Default select example" v-model="item.status">
                     <option :value="true">Active</option>
                     <option :value="false">Sold</option>
-                    
                   </select>
                 </div>
                 <div class="mb-3">
@@ -58,31 +59,54 @@
 <script>
 import ProductTable from "./components/ProductTable.vue";
 import http from "@/axios";
+import {computed, reactive} from "vue";
+import {required$} from "@/validator";
+import {useVuelidate} from "@vuelidate/core";
+import {numeric} from "@vuelidate/validators";
 
 export default {
   name: "ProductList",
   components: {
     ProductTable,
   },
+  setup(){
+    const item = reactive({
+      productName: '',
+      price:'',
+      quantity:'',
+      status: true,
+      description: ''
+    });
+    const rules = computed(() => ({
+      productName: {
+        required$,
+      },
+      price: {
+        required$,
+        numeric
+      },
+      quantity: {
+        required$,
+        numeric
+      }
+    }));
+
+    const v = useVuelidate(rules, item);
+    return { item,v }
+  },
   data() {
     return {
-      item:{
-        productId: '',
-        productName: '',
-        price:'',
-        quantity:'',
-        status:'',
-        description: ''
-      },
       showModal: false
     };
   },
   methods:{
     async onSave(){
         try {
+          this.v.$touch();
+          if (this.v.$invalid) return;
           await http.post(`${process.env.VUE_APP_API}/api/v0_01/product/add`,this.item)
           await this.$refs.productTable.getAllProducts()
-          this.showModal = false;
+          this.onCloseAddNew();
           this.$toast("Create successfully", true);
         } catch (error) {
           this.$toast("Create failure", false);
@@ -93,13 +117,13 @@ export default {
     },
     onCloseAddNew(){
       this.item = {
-        productId: '',
         productName: '',
         price:'',
         quantity:'',
-        status:'',
+        status: true,
         description: ''
       }
+      this.v.$reset();
       this.showModal =false;
     },
     onEdit(item){
