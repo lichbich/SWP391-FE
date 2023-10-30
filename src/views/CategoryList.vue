@@ -18,8 +18,9 @@
         <div class="modal-body">
           <form class="needs-validation">
             <div class="mb-3 form-group">
-              <label class="col-form-label">Category Name</label>
+              <label class="col-form-label input-require">Category Name</label>
               <input type="text" class="form-control" v-model="item.categoryName">
+              <div class="error-message">{{ v.categoryName.$errors[0]?.$message }}</div>
             </div>
           </form>
         </div>
@@ -35,26 +36,42 @@
 <script>
 import CategoryTable from "./components/CategoryTable.vue";
 import http from "@/axios";
+import {computed, reactive} from "vue";
+import { useVuelidate } from '@vuelidate/core'
+import {required$} from "@/validator";
 export default {
   name: "CategoryList",
   components: {
     CategoryTable,
     // ProjectsTable
   },
+  setup(){
+    const item = reactive({
+      categoryName:''
+    });
+    const rules = computed(() => ({
+      categoryName: {
+        required$,
+      }
+    }));
+
+    const v = useVuelidate(rules, item);
+    return { item,v }
+  },
   data() {
     return {
-      item:{
-        categoryName: ''
-      },
       showModal: false
     };
   },
   methods: {
     async onSave() {
       try {
+        this.v.$touch();
+        console.log(this.v)
+        if (this.v.$invalid) return;
         await http.post(`${process.env.VUE_APP_API}/api/v0_01/category/add`, this.item);
         await this.$refs.categoryTable.getAllCategory();
-        this.showModal = false;
+        this.onCloseAddNew();
         this.$toast("Create successfully", true);
       } catch (error) {
         this.$toast("Create failure", false);
@@ -67,6 +84,7 @@ export default {
       this.item = {
         categoryName: ''
       }
+      this.v.$reset();
       this.showModal = false;
     },
     onEdit(item){
