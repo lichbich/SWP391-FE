@@ -9,10 +9,12 @@ import "./assets/css/nucleo-svg.css";
 import ArgonDashboard from "./argon-dashboard";
 // import {Table} from 'ant-design-vue'
 import axios from "axios";
+import globalFilter from './filters';
 window.axios = axios;
 
-
+console.log(globalFilter);
 const app = createApp(App);
+app.config.globalProperties.$filters = globalFilter;
 
 
 // app.use(Table)
