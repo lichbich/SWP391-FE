@@ -6,8 +6,8 @@
     <ul class="navbar-nav">
       <li class="nav-item">
         <sidenav-item
-          url="/dashboard-default"
-          :class="getRoute() === 'dashboard-default' ? 'active' : ''"
+          url="/admin/dashboard"
+          :class="getRoute() === '/admin/dashboard' ? 'active' : ''"
           :navText="this.$store.state.isRTL ? 'لوحة القيادة' : 'Dashboard'"
         >
           <template v-slot:icon>
@@ -15,9 +15,9 @@
           </template>
         </sidenav-item>
       </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <sidenav-item
-          url="/tables"
+          url="/admin/tables"
           :class="getRoute() === 'tables' ? 'active' : ''"
           :navText="this.$store.state.isRTL ? '' : 'Tables'"
         >
@@ -27,11 +27,11 @@
             ></i>
           </template>
         </sidenav-item>
-      </li>
+      </li> -->
       <li class="nav-item">
         <sidenav-item
-          url="/productlist"
-          :class="getRoute() === 'billing' ? 'active' : ''"
+          url="/admin/productlist"
+          :class="getRoute() === '/admin/productlist' ? 'active' : ''"
           :navText="this.$store.state.isRTL ? 'الفواتیر' : 'Product List'"
         >
           <template v-slot:icon>
@@ -42,8 +42,8 @@
       </li>
       <li class="nav-item">
           <sidenav-item
-            url="/categoryList"
-            :class="getRoute() === 'category' ? 'active' : ''"
+            url="/admin/categoryList"
+            :class="getRoute() === '/admin/categoryList' ? 'active' : ''"
             :navText="this.$store.state.isRTL ? 'الفواتیر' : 'Category List'"
           >
             <template v-slot:icon>
@@ -53,8 +53,8 @@
         </li>
       <li class="nav-item">
           <sidenav-item
-            url="/order"
-            :class="getRoute() === 'order' ? 'active' : ''"
+            url="/admin/order"
+            :class="getRoute() === '/admin/order' ? 'active' : ''"
             :navText="this.$store.state.isRTL ? 'الفواتیر' : 'Order'"
           >
             <template v-slot:icon>

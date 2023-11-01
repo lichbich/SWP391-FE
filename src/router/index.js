@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
+import HomeLayout from "../views/layouts/HomeLayout.vue";
+import AdminLayout from "../views/layouts/AdminLayout.vue";
+
 import Home from "../views/Home.vue";
 import Cart from "../views/Cart.vue";
 import Checkout from "../views/Checkout.vue";
-import HomeLayout from "../views/layouts/HomeLayout.vue";
 import Dashboard from "../views/Dashboard.vue";
 import ShopView from "../views/ShopView.vue"
 import Tables from "../views/Tables.vue";
@@ -40,52 +42,78 @@ const router = createRouter({
       ]
     },
     {
-      path: "/dashboard-default",
-      name: "Dashboard",
-      component: Dashboard,
-    },
-    {
-      path: "/shopview",
-      name: "shopview",
-      component: ShopView,
-    },
-    {
-      path: "/tables",
-      name: "Tables",
-      component: Tables,
-    },
-    {
-      path: "/productlist",
-      name: "ProductList",
-      component: ProductList,
-    },
-    {
-      path: "/categoryList",
-      name: "CategoryList",
-      component: CategoryList,
-    },
-    {
-      path: "/order",
-      name: "OrderList",
-      component: OrderList,
-    },
-    {
-      path: "/profile",
-      name: "Profile",
-      component: Profile,
-    },
-    {
-      path: "/signin",
-      name: "Signin",
-      component: Signin,
-    },
-    {
-      path: "/signup",
-      name: "Signup",
-      component: Signup,
+      path: "/admin",
+      name: "/admin",
+      redirect: '/admin/dashboard',
+      component: AdminLayout,
+      children: [
+        {
+          path: "dashboard",
+          name: "dashboard",
+          component: Dashboard,
+        },
+        {
+          path: "shopview",
+          name: "shopview",
+          component: ShopView,
+        },
+        {
+          path: "tables",
+          name: "Tables",
+          component: Tables,
+        },
+        {
+          path: "productlist",
+          name: "ProductList",
+          component: ProductList,
+        },
+        {
+          path: "categoryList",
+          name: "CategoryList",
+          component: CategoryList,
+        },
+        {
+          path: "order",
+          name: "OrderList",
+          component: OrderList,
+        },
+        {
+          path: "profile",
+          name: "Profile",
+          component: Profile,
+        },
+        {
+          path: "signin",
+          name: "Signin",
+          meta: { isAuthPage: true },
+          component: Signin,
+        },
+        {
+          path: "signup",
+          name: "Signup",
+          meta: { isAuthPage: true },
+          component: Signup,
+        },
+      ]
     },
   ],
   linkActiveClass: "active",
 });
+
+router.beforeEach((to, from, next) => {
+  const isAdminAuth = false;
+  // const isClientAuth = false;
+  const isAuthPage = to.meta.isAuthPage;
+  const toAdminRoute = to.path.split('/')[1] === 'admin';
+  if (toAdminRoute && isAdminAuth && !isAuthPage) {
+    next()
+  } else if (toAdminRoute && !isAdminAuth && !isAuthPage) {
+    next('/admin/signin')
+  } else if (toAdminRoute && !isAdminAuth && isAuthPage) {
+    next()
+  } else {
+    next()
+  }
+})
 
 export default router;
