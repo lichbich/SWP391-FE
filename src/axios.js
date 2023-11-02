@@ -5,6 +5,8 @@ const http = axios.create({
     headers: {
         Accept: "application/json",
     },
+    withCredentials: true,
+    baseURL: 'http://localhost:8888/api'
 });
 
 http.interceptors.request.use((config) => {

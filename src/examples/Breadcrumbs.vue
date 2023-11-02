@@ -24,9 +24,6 @@
         {{ currentPage }}
       </li>
     </ol>
-    <h6 class="mb-0 font-weight-bolder" :class="this.$store.state.isNavFixed ? 'text-dark' : 'text-white'">
-      {{ currentPage }}
-    </h6>
   </nav>
 </template>
 

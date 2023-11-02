@@ -1,3 +1,4 @@
+import store from "../store";
 import { createRouter, createWebHistory } from "vue-router";
 import HomeLayout from "../views/layouts/HomeLayout.vue";
 import AdminLayout from "../views/layouts/AdminLayout.vue";
@@ -85,7 +86,7 @@ const router = createRouter({
         {
           path: "signin",
           name: "Signin",
-          // meta: { isAuthPage: true },
+          meta: { isAuthPage: true },
           component: Signin,
         },
         {
@@ -100,20 +101,20 @@ const router = createRouter({
   linkActiveClass: "active",
 });
 
-// router.beforeEach((to, from, next) => {
-//   const isAdminAuth = false;
-//   // const isClientAuth = false;
-//   const isAuthPage = to.meta.isAuthPage;
-//   const toAdminRoute = to.path.split('/')[1] === 'admin';
-//   if (toAdminRoute && isAdminAuth && !isAuthPage) {
-//     next()
-//   } else if (toAdminRoute && !isAdminAuth && !isAuthPage) {
-//     next('/admin/signin')
-//   } else if (toAdminRoute && !isAdminAuth && isAuthPage) {
-//     next()
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  const isAdminAuth = store.state.isAdminAuth;
+  // const isClientAuth = false;
+  const isAuthPage = to.meta.isAuthPage;
+  const toAdminRoute = to.path.split('/')[1] === 'admin';
+  if (toAdminRoute && isAdminAuth && !isAuthPage) {
+    next()
+  } else if (toAdminRoute && !isAdminAuth && !isAuthPage) {
+    next('/admin/signin')
+  } else if (toAdminRoute && !isAdminAuth && isAuthPage) {
+    next()
+  } else {
+    next()
+  }
+})
 
 export default router;

@@ -4,19 +4,33 @@
       <div class="page-header min-vh-100">
         <div class="container">
           <div class="row">
-            <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0">
+            <div
+              class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0"
+            >
               <div class="card card-plain">
                 <div class="pb-0 card-header text-start">
                   <h4 class="font-weight-bolder">Sign In</h4>
                   <p class="mb-0">Enter your email and password to sign in</p>
                 </div>
                 <div class="card-body">
-                  <form role="form">
+                  <form role="form" @submit.prevent="onLogin">
                     <div class="mb-3">
-                      <argon-input type="email" placeholder="Email" name="email" size="lg" />
+                      <argon-input
+                        type="email"
+                        placeholder="Email"
+                        name="email"
+                        size="lg"
+                        :value="formData.email"
+                      />
                     </div>
                     <div class="mb-3">
-                      <argon-input type="password" placeholder="Password" name="password" size="lg" />
+                      <argon-input
+                        type="password"
+                        placeholder="Password"
+                        name="password"
+                        size="lg"
+                        :value="formData.passwrod"
+                      />
                     </div>
 
                     <div class="text-center">
@@ -26,17 +40,19 @@
                         color="success"
                         fullWidth
                         size="lg"
-                      >Sign in</argon-button>
+                        >Sign in</argon-button
+                      >
                     </div>
                   </form>
                 </div>
                 <div class="px-1 pt-0 text-center card-footer px-lg-2">
                   <p class="mx-auto mb-4 text-sm">
                     Don't have an account?
-                    <a
-                      href="javascript:;"
+                    <router-link
+                      to="/admin/signup"
                       class="text-success text-gradient font-weight-bold"
-                    >Sign up</a>
+                      >Sign up</router-link
+                    >
                   </p>
                 </div>
               </div>
@@ -46,16 +62,21 @@
             >
               <div
                 class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center overflow-hidden"
-                style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signin-ill.jpg');
-          background-size: cover;"
+                style="
+                  background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signin-ill.jpg');
+                  background-size: cover;
+                "
               >
                 <span class="mask bg-gradient-success opacity-6"></span>
                 <h4
                   class="mt-5 text-white font-weight-bolder position-relative"
-                >"Attention is the new currency"</h4>
-                <p
-                  class="text-white position-relative"
-                >The more effortless the writing looks, the more effort the writer actually put into the process.</p>
+                >
+                  "Attention is the new currency"
+                </h4>
+                <p class="text-white position-relative">
+                  The more effortless the writing looks, the more effort the
+                  writer actually put into the process.
+                </p>
               </div>
             </div>
           </div>
@@ -66,6 +87,7 @@
 </template>
 
 <script>
+import router from "../router";
 import ArgonInput from "@/components/ArgonInput.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
 const body = document.getElementsByTagName("body")[0];
@@ -89,6 +111,37 @@ export default {
     this.$store.state.showSidenav = true;
     this.$store.state.showFooter = true;
     body.classList.add("bg-gray-100");
+  },
+  data() {
+    return {
+      formData: {
+        email: "",
+        passwrod: "",
+      },
+    };
+  },
+  methods: {
+    async onLogin(submitEvent) {
+      this.formData.email = submitEvent.target.elements.email.value;
+      this.formData.passwrod = submitEvent.target.elements.password.value;
+
+      try {
+        const formData = {
+          email: this.formData.email,
+          password: this.formData.passwrod,
+        };
+        await this.$http.post("/auth/login", formData);
+        this.$toast("Login successfully!");
+        this.$store.state.isAdminAuth = true;
+        router.push("/admin/dashboard");
+      } catch (error) {
+        const errorMsg =
+          typeof error.response.data.message === "object"
+            ? error.response.data.message[0]
+            : error.response.data.message;
+        this.$toast(errorMsg, false);
+      }
+    },
   },
 };
 </script>

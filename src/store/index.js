@@ -2,6 +2,10 @@ import { createStore } from "vuex";
 
 export default createStore({
   state: {
+    // auth
+    isAdminAuth: false,
+    isClientAuth: false,
+    // config
     hideConfigButton: false,
     isPinned: true,
     showConfig: false,
