@@ -23,6 +23,12 @@
                   <div class="error-message">{{ v.productName.$errors[0]?.$message }}</div>
                 </div>
                 <div class="mb-3">
+                  <label class="col-form-label">Category</label>
+                  <select class="form-select" aria-label="Default select example" v-model="item.categoryId">
+                    <option v-for="item in categories" :key="item.categoryId" :value="item.categoryId">{{item.categoryName}}</option>
+                  </select>
+                </div>
+                <div class="mb-3">
                   <label class="col-form-label input-require">Price</label>
                   <input type="text" class="form-control" v-model="item.price">
                   <div class="error-message">{{ v.price.$errors[0]?.$message }}</div>
@@ -59,7 +65,7 @@
 <script>
 import ProductTable from "./components/ProductTable.vue";
 import http from "@/axios";
-import {computed, reactive} from "vue";
+import {computed, reactive, ref} from "vue";
 import {required$} from "@/validator";
 import {useVuelidate} from "@vuelidate/core";
 import {numeric} from "@vuelidate/validators";
@@ -70,12 +76,14 @@ export default {
     ProductTable,
   },
   setup(){
+    const categories = ref([]);
     const item = reactive({
       productName: '',
       price:'',
       quantity:'',
       status: true,
-      description: ''
+      description: '',
+      categoryId: ''
     });
     const rules = computed(() => ({
       productName: {
@@ -91,8 +99,19 @@ export default {
       }
     }));
 
+    const getAllCategory = async () => {
+      try {
+        const res = await http.get(`${process.env.VUE_APP_API}/api/v0_01/category`)
+        categories.value = res.data
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    getAllCategory();
+
     const v = useVuelidate(rules, item);
-    return { item,v }
+    return { item, v, categories }
   },
   data() {
     return {
@@ -104,7 +123,7 @@ export default {
         try {
           this.v.$touch();
           if (this.v.$invalid) return;
-          await http.post(`${process.env.VUE_APP_API}/api/v0_01/product/add`,this.item)
+          await http.post(`${process.env.VUE_APP_API}/api/v0_01/product/dto/add`,this.item)
           await this.$refs.productTable.getAllProducts()
           this.onCloseAddNew();
           this.$toast("Create successfully", true);
@@ -123,7 +142,7 @@ export default {
         status: true,
         description: ''
       }
-      this.v.$reset();
+      setTimeout(() => { this.v.$reset() }, 0)
       this.showModal =false;
     },
     onEdit(item){

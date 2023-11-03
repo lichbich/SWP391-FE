@@ -19,8 +19,19 @@
           <form class="needs-validation">
             <div class="mb-3 form-group">
               <label class="col-form-label input-require">Category Name</label>
-              <input type="text" class="form-control" v-model="item.categoryName">
-              <div class="error-message">{{ v.categoryName.$errors[0]?.$message }}</div>
+              <input type="text" class="form-control" v-model="item.catName" maxlength="100">
+<!--              <div class="error-message">{{ v.catName.$errors[0]?.$message }}</div>-->
+            </div>
+            <div class="mb-3">
+              <label class="col-form-label">Status</label>
+              <select class="form-select" aria-label="Default select example" v-model="item.isActive">
+                <option :value="true">Active</option>
+                <option :value="false">Inactive</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="col-form-label">Description</label>
+              <textarea class="form-control" v-model="item.catDescription" maxlength="1000"></textarea>
             </div>
           </form>
         </div>
@@ -36,9 +47,7 @@
 <script>
 import CategoryTable from "./components/CategoryTable.vue";
 import http from "@/axios";
-import {computed, reactive} from "vue";
-import { useVuelidate } from '@vuelidate/core'
-import {required$} from "@/validator";
+import {reactive} from "vue";
 export default {
   name: "CategoryList",
   components: {
@@ -47,29 +56,34 @@ export default {
   },
   setup(){
     const item = reactive({
-      categoryName:''
+      catName:'',
+      catDescription: '',
+      isActive: true
     });
-    const rules = computed(() => ({
-      categoryName: {
-        required$,
-      }
-    }));
+    // const rules = computed(() => ({
+    //   catName: {
+    //     required$,
+    //   }
+    // }));
 
-    const v = useVuelidate(rules, item);
-    return { item,v }
+    // const v = useVuelidate(rules, item);
+    return { item }
   },
   data() {
     return {
-      showModal: false
+      showModal: false,
+      isEdit: false
     };
   },
   methods: {
     async onSave() {
       try {
-        this.v.$touch();
-        console.log(this.v)
-        if (this.v.$invalid) return;
-        await http.post(`${process.env.VUE_APP_API}/api/v0_01/category/add`, this.item);
+        // this.v.$touch();
+        // if (this.v.$invalid) return;
+        if(this.isEdit){
+          await http.post(`${process.env.VUE_APP_API}/api/category/update`, this.item);
+          this.isEdit = false
+        }else await http.post(`${process.env.VUE_APP_API}/api/category`, this.item);
         await this.$refs.categoryTable.getAllCategory();
         this.onCloseAddNew();
         this.$toast("Create successfully", true);
@@ -78,17 +92,19 @@ export default {
       }
     },
     onOpenAddNew() {
-      this.showModal = true
+      this.showModal = true;
     },
     onCloseAddNew() {
       this.item = {
-        categoryName: ''
+        categoryName: '',
+        description: ''
       }
-      this.v.$reset();
+      this.isEdit = false;
       this.showModal = false;
     },
     onEdit(item){
       this.item = Object.assign({}, item);
+      this.isEdit = true
       this.showModal = true
     }
   }

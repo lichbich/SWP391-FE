@@ -21,20 +21,17 @@
               </th>
             </tr>
           </thead>
-          <tbody v-for="product in products" v-bind:key="product" :id="product.productId">
+          <tbody v-for="product in products" v-bind:key="product" :id="product.id">
             <tr>
               <td>
                 <div class="d-flex px-2 py-1">
-                  <div>
-                    <img src="../../assets/img/team-2.jpg" class="avatar avatar-sm me-3" alt="user1" />
-                  </div>
                   <div class="d-flex flex-column justify-content-center">
-                    <h6 class="mb-0 text-sm">{{ product.productName }}</h6>
+                    <h6 class="mb-0 text-sm">{{ product.p_name }}</h6>
                   </div>
                 </div>
               </td>
               <td>
-                <p class="text-center text-xs font-weight-bold mb-0">{{ product.price }}</p>
+                <p class="text-center text-xs font-weight-bold mb-0">{{ product.p_price }}</p>
               </td>
               <td>
                 <p class="text-center text-xs font-weight-bold mb-0">{{ product.quantity }}</p>
@@ -43,7 +40,10 @@
                 <span class="badge badge-sm bg-gradient-success">Active</span>
               </td>
               <td class="align-middle text-left">
-                <span class="text-secondary text-xs font-weight-bold">{{ product.description }}</span>
+                <span class="text-secondary text-xs font-weight-bold">{{ product.p_description }}</span>
+              </td>
+              <td class="align-middle text-left">
+                <img :src="product.imgLink" style="width: 40px; height: 40px"/>
               </td>
               <td class="align-middle">
                 <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal-edit"
@@ -87,12 +87,13 @@ export default {
   name: "product-table",
   setup() {
     const products = ref([]);
-    const headers = ref(['Product','Price','Quantity','Status','Description','Action']);
+    const headers = ref(['Product','Price','Quantity','Status','Description','Image','Action']);
 
     const getAllProducts = async () => {
       try {
-        const res = await http.get(`${process.env.VUE_APP_API}/api/v0_01/product`)
-        products.value = res.data
+        const res = await http.get(`${process.env.VUE_APP_API}/api/product`,{ params:{page: 0, size: 10}})
+        console.log(res.data)
+        products.value = res.data.data.map(item => ({...item, imgLink: `${process.env.VUE_APP_API}/${item.p_img_link}`}))
       } catch (error) {
         console.log(error);
       }

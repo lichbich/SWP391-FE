@@ -21,18 +21,19 @@
             {{header}}
           </th>
           </thead>
-          <tbody v-for="category in categories" v-bind:key="category" :id="category.categoryId">
+          <tbody v-for="category in categories" v-bind:key="category" :id="category.id">
             <tr>
               <td>
-                <p class="text-left text-xs font-weight-bold mb-0">{{ category.categoryId }}</p>
+                <p class="text-left text-xs font-weight-bold mb-0">{{ category.id }}</p>
               </td>
               <td>
-                <div class="d-flex px-2 py-1">
-                  <div>
-                  </div>
                   <div class="d-flex flex-column justify-content-center">
-                    <h6 class="mb-0 text-sm">{{ category.categoryName }}</h6>
+                    <h6 class="mb-0 text-sm">{{ category.catName }}</h6>
                   </div>
+              </td>
+              <td>
+                <div class="d-flex flex-column justify-content-center">
+                  <h6 class="mb-0 text-sm">{{ category.catDescription }}</h6>
                 </div>
               </td>
               <td class="align-middle">
@@ -79,12 +80,13 @@ export default {
 
 
     const categories = ref([]);
-    const headers = ref(['Category ID','Category Name', 'Action'])
+    const headers = ref(['Category ID','Category Name','Description', 'Action'])
 
     const getAllCategory = async () => {
       try {
-        const res = await http.get(`${process.env.VUE_APP_API}/api/v0_01/category`)
-        categories.value = res.data
+        const res = await http.get(`${process.env.VUE_APP_API}/api/category`)
+        categories.value = res.data.data
+        console.log(res.data)
       } catch (error) {
         console.log(error);
       }
@@ -102,7 +104,7 @@ export default {
   methods: {
     async onDelete(item) {
       try {
-        await http.delete(`${process.env.VUE_APP_API}/api/v0_01/category/delete/${item.categoryId}`)
+        await http.delete(`${process.env.VUE_APP_API}/api/category/delete/${item.id}`)
         await this.getAllCategory();
         this.$toast("Delete successfully", true);
       } catch (error) {

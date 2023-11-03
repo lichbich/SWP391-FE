@@ -14,11 +14,11 @@ export default {
       this.$store.state.adminInfo = data.data;
       this.$router.replace("/admin/dashboard");
     } catch (error) {
-      const errorMsg =
-        typeof error.response.data.message === "object"
-          ? error.response.data.message[0]
-          : error.response.data.message;
-      this.$toast(errorMsg, false);
+      // const errorMsg =
+      //   typeof error.response.data.message === "object"
+      //     ? error.response.data.message[0]
+      //     : error.response.data.message;
+      // this.$toast(errorMsg, false);
     }
   },
 };
