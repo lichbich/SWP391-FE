@@ -4,10 +4,10 @@
       <div class="category-area">
         <div class="title">Catregory</div>
         <ul class="list-category">
-          <li class="category-item">Vegetables & Fruit</li>
-          <li class="category-item">Beverages</li>
-          <li class="category-item">Meats & Seafood</li>
-          <li class="category-item">Frozen Foods</li>
+          <li class="category-item" v-for="c in categories" :key="c.id" :class="{ active: c.id === selectCatId }"
+            @click="selectCatId = c.id">
+            {{ c.catName }}
+          </li>
         </ul>
       </div>
       <div class="product-area">
@@ -15,7 +15,7 @@
         <div class="list-product">
           <div class="product-item" v-for="p in listProd" :key="p.id">
             <div class="product-img">
-              <img :src="p.img" alt="">
+              <img :src="p.img" alt="" />
             </div>
             <div class="product-info">
               <div class="product-name">{{ p.name }}</div>
@@ -24,8 +24,8 @@
                 <span class="discount-price">{{ p.salePrice }}</span>
               </div>
               <div class="product-rate">
-                <span>{{ '⭐⭐⭐⭐⭐'.slice(0, p.star) }}</span>
-                <span style="margin-left: 5px;">{{ p.inStock && 'In Stock' }}</span>
+                <span>{{ "⭐⭐⭐⭐⭐".slice(0, p.star) }}</span>
+                <span style="margin-left: 5px">{{ p.inStock && "In Stock" }}</span>
               </div>
             </div>
             <div class="add-to-cart">Add</div>
@@ -37,103 +37,110 @@
 </template>
 
 <script>
-const body = document.getElementsByTagName("body")[0];
-
+import { getCategory, getProdcutListByCategory } from "@/data/api";
 export default {
   name: "Home",
   components: {},
-  created() {
-    this.$store.state.hideConfigButton = true;
-    this.$store.state.showNavbar = false;
-    this.$store.state.showSidenav = false;
-    this.$store.state.showFooter = false;
-    body.classList.remove("bg-gray-100");
-  },
-  beforeUnmount() {
-    this.$store.state.hideConfigButton = false;
-    this.$store.state.showNavbar = true;
-    this.$store.state.showSidenav = true;
-    this.$store.state.showFooter = true;
-    body.classList.add("bg-gray-100");
-  },
   data() {
     return {
+      selectCatId: "",
+      categories: [],
       listProd: [
         {
           id: 1,
           star: 4,
           inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
-          img: require('../assets/img/products/1.png'),
-          name: 'Fantasy Crunchy Choco Chip Cookies',
+          price: "$28.56",
+          salePrice: "$26.69",
+          img: require("../assets/img/products/1.png"),
+          name: "Fantasy Crunchy Choco Chip Cookies",
         },
         {
           id: 2,
           star: 5,
           inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
-          img: require('../assets/img/products/2.png'),
-          name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
+          price: "$28.56",
+          salePrice: "$26.69",
+          img: require("../assets/img/products/2.png"),
+          name: "Peanut Butter Bite Premium Butter Cookies 600 g",
         },
         {
           id: 3,
           star: 2,
           inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
-          img: require('../assets/img/products/3.png'),
-          name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
+          price: "$28.56",
+          salePrice: "$26.69",
+          img: require("../assets/img/products/3.png"),
+          name: "Peanut Butter Bite Premium Butter Cookies 600 g",
         },
         {
           id: 4,
           star: 3,
           inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
-          img: require('../assets/img/products/4.png'),
-          name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
+          price: "$28.56",
+          salePrice: "$26.69",
+          img: require("../assets/img/products/4.png"),
+          name: "Peanut Butter Bite Premium Butter Cookies 600 g",
         },
         {
           id: 1,
           star: 4,
           inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
-          img: require('../assets/img/products/1.png'),
-          name: 'Fantasy Crunchy Choco Chip Cookies',
+          price: "$28.56",
+          salePrice: "$26.69",
+          img: require("../assets/img/products/1.png"),
+          name: "Fantasy Crunchy Choco Chip Cookies",
         },
         {
           id: 2,
           star: 5,
           inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
-          img: require('../assets/img/products/2.png'),
-          name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
+          price: "$28.56",
+          salePrice: "$26.69",
+          img: require("../assets/img/products/2.png"),
+          name: "Peanut Butter Bite Premium Butter Cookies 600 g",
         },
         {
           id: 3,
           star: 2,
           inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
-          img: require('../assets/img/products/3.png'),
-          name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
+          price: "$28.56",
+          salePrice: "$26.69",
+          img: require("../assets/img/products/3.png"),
+          name: "Peanut Butter Bite Premium Butter Cookies 600 g",
         },
         {
           id: 4,
           star: 3,
           inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
-          img: require('../assets/img/products/4.png'),
-          name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
+          price: "$28.56",
+          salePrice: "$26.69",
+          img: require("../assets/img/products/4.png"),
+          name: "Peanut Butter Bite Premium Butter Cookies 600 g",
         },
-      ]
-    }
-  }
+      ],
+    };
+  },
+  watch: {
+    async selectCatId(val) {
+      const { data } = await getProdcutListByCategory({ categoryId: val });
+      this.listProd = this.handleProductList(data.data);
+    },
+  },
+  async mounted() {
+    const { data } = await getCategory();
+    this.categories = data.data;
+  },
+  methods: {
+    handleProductList(data) {
+      return data.map((item) => ({
+        ...item,
+        img: require("../assets/img/products/2.png"),
+        name: item.pName,
+        price: item.pPrice,
+      }));
+    },
+  },
 };
 </script>
 
@@ -178,7 +185,7 @@ export default {
     .category-item {
       margin-top: 30px;
       position: relative;
-      transition: .3s ease-in-out;
+      transition: 0.3s ease-in-out;
       cursor: pointer;
 
       &::after {
@@ -188,8 +195,8 @@ export default {
         height: 2px;
         bottom: -8px;
         left: 0;
-        opacity: .5;
-        transition: .3s ease-in-out;
+        opacity: 0.5;
+        transition: 0.3s ease-in-out;
         background-color: #0da487;
       }
 
@@ -198,6 +205,13 @@ export default {
 
         &::after {
           width: 70px;
+        }
+      }
+
+      &.active {
+        &::after {
+          width: 70px;
+          letter-spacing: 0.5px;
         }
       }
     }
@@ -255,7 +269,6 @@ export default {
           color: #0da487;
           font-weight: bold;
         }
-
 
         .discount-price {
           font-size: 15px;

@@ -16,8 +16,9 @@
         <table class="table align-items-center mb-0">
           <thead>
             <tr>
-              <th class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-8" v-for="(header,index) in headers" :key="index">
-                {{header}}
+              <th class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-8"
+                v-for="(header, index) in headers" :key="index">
+                {{ header }}
               </th>
             </tr>
           </thead>
@@ -43,7 +44,7 @@
                 <span class="text-secondary text-xs font-weight-bold">{{ product.p_description }}</span>
               </td>
               <td class="align-middle text-left">
-                <img :src="product.imgLink" style="width: 40px; height: 40px"/>
+                <img :src="product.imgLink" style="width: 40px; height: 40px" />
               </td>
               <td class="align-middle">
                 <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal-edit"
@@ -87,13 +88,13 @@ export default {
   name: "product-table",
   setup() {
     const products = ref([]);
-    const headers = ref(['Product','Price','Quantity','Status','Description','Image','Action']);
+    const headers = ref(['Product', 'Price', 'Quantity', 'Status', 'Description', 'Image', 'Action']);
 
     const getAllProducts = async () => {
       try {
-        const res = await http.get(`${process.env.VUE_APP_API}/api/product`,{ params:{page: 0, size: 10}})
+        const res = await http.get(`${process.env.VUE_APP_API}/api/product`, { params: { page: 0, size: 10 } })
         console.log(res.data)
-        products.value = res.data.data.map(item => ({...item, imgLink: `${process.env.VUE_APP_API}/${item.p_img_link}`}))
+        products.value = res.data.data.map(item => ({ ...item, imgLink: `${process.env.VUE_APP_API}/${item.p_img_link}` }))
       } catch (error) {
         console.log(error);
       }
@@ -108,9 +109,9 @@ export default {
       // columns
     }
   },
-  methods:{
-    async onDelete(item){
-      try{
+  methods: {
+    async onDelete(item) {
+      try {
         await http.delete(`${process.env.VUE_APP_API}/api/v0_01/product/delete/${item.productId}`)
         await this.getAllProducts();
         this.$toast("Delete successfully", true);
@@ -118,11 +119,11 @@ export default {
         this.$toast("Delete failure", false);
       }
     },
-    onAdd(){
+    onAdd() {
       this.$emit('on-add-new')
     },
-    onEdit(item){
-      console.log('aaaaa',item)
+    onEdit(item) {
+      console.log('aaaaa', item)
       this.$emit('on-edit', item)
     }
   }

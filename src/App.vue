@@ -80,6 +80,7 @@ export default {
   height: 20px;
   color: red;
   font-size: 13px;
+  position: absolute;
 }
 
 .input-require::after{
