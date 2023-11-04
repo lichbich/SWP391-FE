@@ -18,7 +18,7 @@
               <img :src="p.img" alt="" />
             </div>
             <div class="product-info">
-              <div class="product-name">{{ p.name }}</div>
+              <div class="product-name">{{ p.pName }}</div>
               <div class="product-price">
                 <span class="real-price">{{ p.price }}</span>
                 <span class="discount-price">{{ p.salePrice }}</span>
@@ -28,7 +28,7 @@
                 <span style="margin-left: 5px">{{ p.inStock && "In Stock" }}</span>
               </div>
             </div>
-            <div class="add-to-cart">Add</div>
+            <div class="add-to-cart" @click="addToCart(p)">Add</div>
           </div>
         </div>
       </div>
@@ -140,6 +140,21 @@ export default {
         price: item.pPrice,
       }));
     },
+    addToCart(item) {
+      let cart = []
+      let storage = sessionStorage.getItem('cart')
+      if (storage) {
+        cart = JSON.parse(storage)
+      }
+      let product = cart.find(el => el.id === item.id)
+      if (product) {
+        product.quantity += 1
+      } else {
+        cart.push({ ...item, quantity: 1 })
+      }
+      this.$store.commit('setQuantity', cart.length)
+      sessionStorage.setItem('cart', JSON.stringify(cart))
+    }
   },
 };
 </script>
