@@ -19,9 +19,9 @@
                                 <div class="product-quantity">
                                     <span>Qty</span>
                                     <div class="quantity-container">
-                                        <span class="minus">-</span>
+                                        <span class="minus" @click="subProduct(p)">-</span>
                                         <span>{{ p.quantity }}</span>
-                                        <span class="plus">+</span>
+                                        <span class="plus" @click="addProduct(p)">+</span>
                                     </div>
                                 </div>
                                 <div class="product-total">
@@ -30,7 +30,7 @@
                                 </div>
                                 <div class="product-action">
                                     <span>Action</span>
-                                    <span class="remove-link">Remove</span>
+                                    <span class="remove-link" @click="removeProduct(p)">Remove</span>
                                 </div>
                             </div>
                         </div>
@@ -88,8 +88,35 @@ export default {
     },
     mounted() {
       this.listProd = JSON.parse(sessionStorage.getItem('cart'));
-      console.log(this.listProd)
+    },
+  methods: {
+    subProduct(item){
+      this.calculateQuantity(item, false)
+    },
+    addProduct(item){
+      this.calculateQuantity(item, true)
+    },
+    calculateQuantity(item, add = true){
+      let cart = JSON.parse(sessionStorage.getItem('cart'));
+      let product = cart.find(el => el.id === item.id)
+      if(product) {
+        if(add){
+          product.quantity += 1
+        } else {
+          if(product.quantity > 0) product.quantity -= 1
+          else return
+        }
+      }
+      sessionStorage.setItem('cart', JSON.stringify(cart));
+      this.listProd = JSON.parse(sessionStorage.getItem('cart'));
+    },
+    removeProduct(item){
+      let cart = JSON.parse(sessionStorage.getItem('cart'));
+      const cartUpdate  = cart.filter(el => item.id !== el.id)
+      sessionStorage.setItem('cart', JSON.stringify(cartUpdate));
+      this.listProd = JSON.parse(sessionStorage.getItem('cart'));
     }
+  }
 };
 </script>
   
@@ -225,6 +252,7 @@ export default {
                     .remove-link {
                         color: #bf2020;
                         text-decoration: underline;
+                        cursor: pointer;
                     }
                 }
             }
