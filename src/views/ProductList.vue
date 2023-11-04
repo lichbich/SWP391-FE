@@ -209,6 +209,9 @@ export default {
         else
           await createProduct(formData);
 
+        const { data: listProd } = await getProdcutList();
+        this.products = listProd.data;
+        
         this.$refs.productForm.reset();
         this.formData = {
           productName: '',
