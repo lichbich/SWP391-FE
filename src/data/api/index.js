@@ -1,7 +1,7 @@
 import axios from '../../axios'
 
-export const getProdcutList = () => {
-    return axios.get('/product')
+export const getProdcutList = (params) => {
+    return axios.get('/product', { params })
 }
 
 export const getProdcutListByCategory = (params) => {
@@ -16,6 +16,6 @@ export const createProduct = (formData) => {
     return axios.post('/product', formData)
 }
 
-export const updateProduct = (formData) => {
-    return axios.post('/product/update', formData)
+export const updateProduct = (formData, id) => {
+    return axios.post(`/product/update/${id}`, formData)
 }

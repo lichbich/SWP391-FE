@@ -83,10 +83,26 @@
 </template>
 
 <script>
+const body = document.getElementsByTagName("body")[0];
+
 import { getCategory, getProdcutListByCategory } from "@/data/api";
+
 export default {
   name: "Home",
-  components: {},
+  created() {
+    this.$store.state.hideConfigButton = true;
+    this.$store.state.showNavbar = false;
+    this.$store.state.showSidenav = false;
+    this.$store.state.showFooter = false;
+    body.classList.remove("bg-gray-100");
+  },
+  beforeUnmount() {
+    this.$store.state.hideConfigButton = false;
+    this.$store.state.showNavbar = true;
+    this.$store.state.showSidenav = true;
+    this.$store.state.showFooter = true;
+    body.classList.add("bg-gray-100");
+  },
   data() {
     return {
       listProd: [],
@@ -367,10 +383,11 @@ export default {
   }
 
   .prod-detail-container {
+    z-index: 0;
     width: 100%;
     display: flex;
-    z-index: 0;
     min-width: 700px;
+    min-height: 400px;
   }
 
   .product-image {

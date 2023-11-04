@@ -3,7 +3,7 @@
     <div class="header">
       <div class="container header-container">
         <div class="logo">
-          <router-link to="/home" class="action-btn">
+          <router-link to="/" class="action-btn">
             <img src="../../assets/img/logos/home-logo.png" alt="">
           </router-link>
         </div>
