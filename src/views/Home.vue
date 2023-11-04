@@ -125,6 +125,7 @@ export default {
       } else {
         cart.push({...item, quantity: 1})
       }
+      this.$store.commit('setQuantity', cart.length)
       sessionStorage.setItem('cart', JSON.stringify(cart))
     }
   }
