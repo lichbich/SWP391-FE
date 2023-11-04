@@ -13,6 +13,7 @@ import ProductList from "../views/ProductList.vue";
 import CategoryList from "../views/CategoryList.vue";
 import OrderList from "../views/OrderList.vue";
 import Profile from "../views/Profile.vue";
+import NotFound from "../views/NotFound.vue";
 import Signup from "../views/SignUp.vue";
 import Signin from "../views/Signin.vue";
 
@@ -39,6 +40,18 @@ const router = createRouter({
           path: "/checkout",
           name: "Checkout",
           component: Checkout,
+        },
+        {
+          path: "signin",
+          name: "Signin",
+          meta: { isAuthPage: true },
+          component: Signin,
+        },
+        {
+          path: "signup",
+          name: "Signup",
+          meta: { isAuthPage: true },
+          component: Signup,
         },
       ]
     },
@@ -97,6 +110,10 @@ const router = createRouter({
         },
       ]
     },
+    {
+      path: "/:pathMatch(.*)*",
+      component: NotFound
+    }
   ],
   linkActiveClass: "active",
 });
