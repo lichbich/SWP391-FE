@@ -9,24 +9,12 @@
                 <div class="modal-body">
                     <form>
                         <div class="mb-3">
-                            <label class="col-form-label">Full Name</label>
-                            <input type="text" class="form-control" v-model="formData.fullName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="col-form-label">Email</label>
-                            <input type="text" class="form-control" v-model="formData.email" required>
-                        </div>
-                        <div class="mb-3">
                             <label class="col-form-label">Phone Number</label>
                             <input type="text" class="form-control" v-model="formData.phoneNumber" required>
                         </div>
                         <div class="mb-3">
                             <label class="col-form-label">Address</label>
                             <input type="text" class="form-control" v-model="formData.address" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="col-form-label">City</label>
-                            <input type="text" class="form-control" v-model="formData.city" required>
                         </div>
                     </form>
                 </div>
@@ -48,10 +36,7 @@ export default {
         return {
             showModal: false,
             formData: {
-                city: '',
-                email: '',
                 address: '',
-                fullName: '',
                 phoneNumber: '',
             },
         }
@@ -59,7 +44,7 @@ export default {
     methods: {
         onSave() {
             this.showModal = false;
-            this.$emit('order');
+            this.$emit('order', this.formData);
         },
         show() {
             this.showModal = true;

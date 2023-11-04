@@ -22,7 +22,8 @@ export default createStore({
     showMain: true,
     layout: "default",
     loading: false,
-    quantity: 0
+    quantity: 0,
+    user: {}
   },
   mutations: {
     toggleConfigurator(state) {
@@ -33,6 +34,9 @@ export default createStore({
     },
     setQuantity(state, val) {
       state.quantity = val;
+    },
+    setUser(state, val) {
+      state.user = val;
     },
     navbarMinimize(state) {
       const sidenav_show = document.querySelector(".g-sidenav-show");
@@ -65,6 +69,7 @@ export default createStore({
   },
   getters: {
     loading: (state) => state.loading,
-    quantity: (state) => state.quantity
+    quantity: (state) => state.quantity,
+    user: (state) => state.user,
   }
 });

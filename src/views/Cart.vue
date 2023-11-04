@@ -38,19 +38,11 @@
                 </div>
                 <div class="cart-total-area">
                     <div class="title">Cart Total</div>
-                    <div class="cart-total-item">
-                        <span>Subtotal</span>
-                        <span>$125.65</span>
-                    </div>
-                    <div class="cart-total-item">
-                        <span>Shipping</span>
-                        <span>$125.65</span>
-                    </div>
                     <div class="cart-total-item total-text">
                         <span>Total</span>
-                        <span>$125.65</span>
+                        <span>${{total}}</span>
                     </div>
-                    <div class="btn checkout-btn">Process To Checkout</div>
+                    <router-link class="btn checkout-btn" to="/checkout">Process To Checkout</router-link>
                 </div>
             </div>
         </div>
@@ -83,11 +75,13 @@ export default {
     },
     data() {
         return {
-            listProd: []
+            listProd: [],
+            total: ''
         }
     },
     mounted() {
       this.listProd = JSON.parse(sessionStorage.getItem('cart'));
+      this.total = this.calculateTotal();
     },
   methods: {
     subProduct(item){
@@ -109,12 +103,19 @@ export default {
       }
       sessionStorage.setItem('cart', JSON.stringify(cart));
       this.listProd = JSON.parse(sessionStorage.getItem('cart'));
+      this.total = this.calculateTotal();
     },
     removeProduct(item){
       let cart = JSON.parse(sessionStorage.getItem('cart'));
       const cartUpdate  = cart.filter(el => item.id !== el.id)
       sessionStorage.setItem('cart', JSON.stringify(cartUpdate));
       this.listProd = JSON.parse(sessionStorage.getItem('cart'));
+      this.total = this.calculateTotal();
+    },
+    calculateTotal(){
+      return this.listProd.reduce((total, item) => {
+        return total + (Number(item['quantity']) * Number(item['pPrice']))
+      }, 0)
     }
   }
 };

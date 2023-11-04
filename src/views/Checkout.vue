@@ -6,22 +6,21 @@
                     <h5 class="title">Product Information</h5>
                     <div class="list-product">
                         <div class="product-item" v-for="p in listProd" :key="p.id">
-                            <div class="product-name">{{ p.name }}</div>
+                            <div class="product-name">{{ p.pName }}</div>
                             <div class="product-info">
                                 <div class="product-img">
                                     <img :src="p.img" alt="">
                                 </div>
                                 <div class="product-vendor">
-                                    <span class="vendor-name">Sold By: {{ p.vendorName }}</span>
-                                    <span class="price">Price: {{ $filters.toDollarFormat(p.price) }}</span>
-                                    <span class="quantity">Quantity: {{ p.count }}</span>
+                                    <span class="price">Price: {{ $filters.toDollarFormat(p.pPrice) }}</span>
+                                    <span class="quantity">Quantity: {{ p.quantity }}</span>
                                 </div>
                                 <div class="product-price"></div>
                                 <div class="product-quantity"></div>
                                 <div class="product-action"></div>
                                 <div class="product-total">
                                     <span>Total</span>
-                                    <span class="total-text">{{ $filters.toDollarFormat(p.count * p.price) }}</span>
+                                    <span class="total-text">{{ $filters.toDollarFormat(p.quantity * p.pPrice) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -29,17 +28,9 @@
                 </div>
                 <div class="cart-total-area">
                     <div class="title">Order Summery</div>
-                    <div class="cart-total-item">
-                        <span>Subtotal</span>
-                        <span>$125.65</span>
-                    </div>
-                    <div class="cart-total-item">
-                        <span>Shipping</span>
-                        <span>$125.65</span>
-                    </div>
                     <div class="cart-total-item total-text">
                         <span>Total</span>
-                        <span>$125.65</span>
+                        <span>${{total}}</span>
                     </div>
                     <div class="btn checkout-btn" @click="showBillingAddressForm">Place Order</div>
                 </div>
@@ -50,6 +41,8 @@
 </template>
   
 <script>
+import http from "@/axios";
+
 const body = document.getElementsByTagName("body")[0];
 
 import CheckoutDeliveryForm from './CheckoutDeliveryForm.vue';
@@ -78,65 +71,41 @@ export default {
     },
     data() {
         return {
-            listProd: [
-                {
-                    id: 1,
-                    star: 4,
-                    count: 1,
-                    inStock: true,
-                    quantity: 500,
-                    price: 28.56,
-                    salePrice: 26.69,
-                    vendorName: 'Fresho',
-                    img: require('../assets/img/products/1.png'),
-                    name: 'Fantasy Crunchy Choco Chip Cookies',
-                },
-                {
-                    id: 2,
-                    star: 5,
-                    count: 2,
-                    inStock: true,
-                    quantity: 500,
-                    price: 28.56,
-                    salePrice: 26.69,
-                    vendorName: 'Fresho',
-                    img: require('../assets/img/products/2.png'),
-                    name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
-                },
-                {
-                    id: 3,
-                    star: 2,
-                    count: 3,
-                    inStock: true,
-                    quantity: 500,
-                    price: 28.56,
-                    salePrice: 26.69,
-                    vendorName: 'Nesto',
-                    img: require('../assets/img/products/3.png'),
-                    name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
-                },
-                {
-                    id: 4,
-                    star: 3,
-                    count: 4,
-                    inStock: true,
-                    quantity: 500,
-                    price: 28.56,
-                    salePrice: 26.69,
-                    vendorName: 'Basket',
-                    img: require('../assets/img/products/4.png'),
-                    name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
-                }
-            ]
+            listProd: [],
+            total: ''
         }
+    },
+    mounted() {
+      this.listProd = JSON.parse(sessionStorage.getItem('cart'));
+      this.total = this.calculateTotal();
     },
     methods: {
         showBillingAddressForm() {
             this.$refs.billingAddressForm.show();
         },
-        onOrder() {
-            console.log('User order');
-        }
+        async onOrder(data) {
+            const formData = {}
+            formData.userId = JSON.parse(sessionStorage.getItem('user'))?.id;
+            formData.address = data.address;
+            formData.phone = data.phoneNumber;
+            formData.product = this.listProd;
+
+          try {
+            await http.post(`${process.env.VUE_APP_API}/api/order`, formData);
+            sessionStorage.removeItem('cart');
+            this.listProd = JSON.parse(sessionStorage.getItem('cart'));
+            this.$toast("Create successfully", true);
+          } catch (error) {
+            this.$toast("Create failure", false);
+          }
+        },
+      calculateTotal(){
+          if(this.listProd){
+            return this.listProd.reduce((total, item) => {
+              return total + (Number(item['quantity']) * Number(item['pPrice']))
+            }, 0)
+          } else return 0;
+      }
     }
 };
 </script>

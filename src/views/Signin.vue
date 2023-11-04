@@ -130,7 +130,8 @@ export default {
           email: this.formData.email,
           password: this.formData.passwrod,
         };
-        await this.$http.post("/auth/login", formData);
+        const user = (await this.$http.post("/auth/login", formData)).data.data;
+        sessionStorage.setItem('user', JSON.stringify(user));
         this.$toast("Login successfully!");
         this.$store.state.isAdminAuth = true;
         router.push("/admin/dashboard");
