@@ -8,7 +8,7 @@
                             <div class="product-name">{{ p.pName }}</div>
                             <div class="product-info">
                                 <div class="product-img">
-                                    <img :src="p.img" alt="">
+                                    <img :src="$filters.getImageLink(p.img)" alt="">
                                 </div>
                                 <div class="product-price">
                                     <span>Price</span>
@@ -113,9 +113,11 @@ export default {
       this.total = this.calculateTotal();
     },
     calculateTotal(){
-      return this.listProd.reduce((total, item) => {
-        return total + (Number(item['quantity']) * Number(item['pPrice']))
-      }, 0)
+      if(this.listProd){
+        return this.listProd.reduce((total, item) => {
+          return total + (Number(item['quantity']) * Number(item['pPrice']))
+        }, 0)
+      } else return 0;
     }
   }
 };

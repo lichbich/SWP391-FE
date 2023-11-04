@@ -9,7 +9,7 @@
                             <div class="product-name">{{ p.pName }}</div>
                             <div class="product-info">
                                 <div class="product-img">
-                                    <img :src="p.img" alt="">
+                                    <img :src="$filters.getImageLink(p.img)" alt="">
                                 </div>
                                 <div class="product-vendor">
                                     <span class="price">Price: {{ $filters.toDollarFormat(p.pPrice) }}</span>
