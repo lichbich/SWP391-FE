@@ -11,7 +11,7 @@
                 </div>
                 <div class="action-area">
                     <div class="action-btn">Like</div>
-                    <div class="action-btn">Cart</div>
+                    <router-link to="/cart" class="action-btn">Cart</router-link>
                     <div class="action-btn">Account</div>
                 </div>
             </div>

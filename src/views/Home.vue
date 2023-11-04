@@ -4,10 +4,9 @@
       <div class="category-area">
         <div class="title">Catregory</div>
         <ul class="list-category">
-          <li class="category-item">Vegetables & Fruit</li>
-          <li class="category-item">Beverages</li>
-          <li class="category-item">Meats & Seafood</li>
-          <li class="category-item">Frozen Foods</li>
+          <li class="category-item" v-for="item in categories" :key="item.id"
+              @click="active = item.id"
+              :class="{active:active === item.id}">{{item.catName}}</li>
         </ul>
       </div>
       <div class="product-area">
@@ -18,17 +17,12 @@
               <img :src="p.img" alt="">
             </div>
             <div class="product-info">
-              <div class="product-name">{{ p.name }}</div>
+              <div class="product-name">{{ p.pName }}</div>
               <div class="product-price">
-                <span class="real-price">{{ p.price }}</span>
-                <span class="discount-price">{{ p.salePrice }}</span>
-              </div>
-              <div class="product-rate">
-                <span>{{ '⭐⭐⭐⭐⭐'.slice(0, p.star) }}</span>
-                <span style="margin-left: 5px;">{{ p.inStock && 'In Stock' }}</span>
+                <span class="real-price">{{ p.pPrice }}</span>
               </div>
             </div>
-            <div class="add-to-cart">Add</div>
+            <div class="add-to-cart" @click="addToCart(p)">Add</div>
           </div>
         </div>
       </div>
@@ -37,6 +31,8 @@
 </template>
 
 <script>
+import http from "@/axios";
+
 const body = document.getElementsByTagName("body")[0];
 
 export default {
@@ -61,77 +57,75 @@ export default {
       listProd: [
         {
           id: 1,
-          star: 4,
-          inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
+          pPrice: 28.56,
           img: require('../assets/img/products/1.png'),
-          name: 'Fantasy Crunchy Choco Chip Cookies',
+          pName: 'Fantasy Crunchy Choco Chip Cookies',
         },
         {
           id: 2,
-          star: 5,
-          inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
+          pPrice: 28.56,
           img: require('../assets/img/products/2.png'),
-          name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
+          pName: 'Fantasy Crunchy Choco Chip Cookies',
         },
         {
           id: 3,
-          star: 2,
-          inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
+          pPrice: 28.56,
           img: require('../assets/img/products/3.png'),
-          name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
+          pName: 'Fantasy Crunchy Choco Chip Cookies',
         },
         {
           id: 4,
-          star: 3,
-          inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
+          pPrice: 28.56,
           img: require('../assets/img/products/4.png'),
-          name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
+          pName: 'Fantasy Crunchy Choco Chip Cookies',
         },
         {
-          id: 1,
-          star: 4,
-          inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
+          id: 5,
+          pPrice: 28.56,
           img: require('../assets/img/products/1.png'),
-          name: 'Fantasy Crunchy Choco Chip Cookies',
+          pName: 'Fantasy Crunchy Choco Chip Cookies',
         },
         {
-          id: 2,
-          star: 5,
-          inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
+          id: 6,
+          pPrice: 28.56,
           img: require('../assets/img/products/2.png'),
-          name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
+          pName: 'Fantasy Crunchy Choco Chip Cookies',
         },
         {
-          id: 3,
-          star: 2,
-          inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
+          id: 7,
+          pPrice: 28.56,
           img: require('../assets/img/products/3.png'),
-          name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
+          pName: 'Fantasy Crunchy Choco Chip Cookies',
         },
         {
-          id: 4,
-          star: 3,
-          inStock: true,
-          price: '$28.56',
-          salePrice: '$26.69',
+          id: 8,
+          pPrice: 28.56,
           img: require('../assets/img/products/4.png'),
-          name: 'Peanut Butter Bite Premium Butter Cookies 600 g',
+          pName: 'Fantasy Crunchy Choco Chip Cookies',
         },
-      ]
+
+      ],
+      categories: [],
+      active: null
+    }
+  },
+  async mounted() {
+    this.categories = (await http.get(`${process.env.VUE_APP_API}/api/category/customer`))?.data
+  },
+  methods: {
+    addToCart(item) {
+      let cart = []
+      let storage = sessionStorage.getItem('cart')
+      if(storage) {
+        cart = JSON.parse(storage)
+      }
+      let product = cart.find(el => el.id === item.id)
+      if(product) {
+        product.quantity += 1
+      } else {
+        cart.push({...item, quantity: 1})
+      }
+      sessionStorage.setItem('cart', JSON.stringify(cart))
     }
   }
 };
@@ -139,6 +133,11 @@ export default {
 
 <style lang="scss" scoped>
 .main-container {
+  .active {
+    color: red;
+    font-size: 20px;
+    font-weight: bold;
+  }
   margin-top: 60px;
 
   .main-area {
