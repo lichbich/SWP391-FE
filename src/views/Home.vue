@@ -4,8 +4,13 @@
       <div class="category-area">
         <div class="title">Catregory</div>
         <ul class="list-category">
-          <li class="category-item" v-for="c in categories" :key="c.id" :class="{ active: c.id === selectCatId }"
-            @click="selectCatId = c.id">
+          <li
+            class="category-item"
+            v-for="c in categories"
+            :key="c.id"
+            :class="{ active: c.id === selectCatId }"
+            @click="selectCatId = c.id"
+          >
             {{ c.catName }}
           </li>
         </ul>
@@ -15,25 +20,47 @@
         <div class="list-product">
           <div class="product-item" v-for="p in listProd" :key="p.id">
             <div class="product-img">
-              <img :src="p.img" alt="" />
+              <img :src="$filters.getImageLink(p.img)" alt="" />
               <div class="actions-container">
                 <div class="actions-area">
                   <div class="see-detail" @click="seeDetail(p)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                      class="feather feather-eye">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="feather feather-eye"
+                    >
+                      <path
+                        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                      ></path>
                       <circle cx="12" cy="12" r="3"></circle>
                     </svg>
                   </div>
                   <div class="divider"></div>
                   <div class="add-to-cart" @click="addToCart(p)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                      class="feather feather-shopping-cart">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="feather feather-shopping-cart"
+                    >
                       <circle cx="9" cy="21" r="1"></circle>
                       <circle cx="20" cy="21" r="1"></circle>
-                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                      <path
+                        d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+                      ></path>
                     </svg>
                   </div>
                 </div>
@@ -42,14 +69,23 @@
             <div class="product-info">
               <div class="product-name">{{ p.pName }}</div>
               <div class="product-price">
-                <span class="real-price">{{ $filters.toDollarFormat(p.price) }}</span>
-                <span class="discount-price">{{ $filters.toDollarFormat(p.salePrice) }}</span>
+                <span class="real-price">{{
+                  $filters.toDollarFormat(p.price)
+                }}</span>
+                <span class="discount-price">{{
+                  $filters.toDollarFormat(p.salePrice)
+                }}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div v-if="showProductDetail" class="modal prod-detail" id="staticBackdrop" data-bs-backdrop="static">
+      <div
+        v-if="showProductDetail"
+        class="modal prod-detail"
+        id="staticBackdrop"
+        data-bs-backdrop="static"
+      >
         <div class="modal-dialog">
           <div class="modal-content" style="min-width: 500px">
             <div class="modal-body prod-detail-container">
@@ -57,7 +93,7 @@
                 <i class="fas fa-window-close"></i>
               </div>
               <div class="product-image">
-                <img :src="productDetail.img" alt="">
+                <img :src="$filters.getImageLink(productDetail.img)" alt="" />
               </div>
               <div class="product-information">
                 <div class="p-container">
@@ -65,13 +101,15 @@
                   <div class="p-price">{{ productDetail.price }}</div>
                   <div class="p-detail">
                     <b>Product Details :</b>
-                    <p style="font-size: 14px;">
+                    <p style="font-size: 14px">
                       {{ productDetail.pDescription }}
                     </p>
                   </div>
                 </div>
                 <div class="p-actions">
-                  <div class="add-to-cart" @click="onAddToCard">Add To Cart</div>
+                  <div class="add-to-cart" @click="onAddToCard">
+                    Add To Cart
+                  </div>
                 </div>
               </div>
             </div>
@@ -109,7 +147,7 @@ export default {
       categories: [],
       selectCatId: "",
       productDetail: {},
-      showProductDetail: false
+      showProductDetail: false,
     };
   },
   watch: {
@@ -136,24 +174,24 @@ export default {
       this.productDetail = p;
     },
     addToCart(item) {
-      let cart = []
-      let storage = sessionStorage.getItem('cart')
+      let cart = [];
+      let storage = sessionStorage.getItem("cart");
       if (storage) {
-        cart = JSON.parse(storage)
+        cart = JSON.parse(storage);
       }
-      let product = cart.find(el => el.id === item.id)
+      let product = cart.find((el) => el.id === item.id);
       if (product) {
-        product.quantity += 1
+        product.quantity += 1;
       } else {
-        cart.push({ ...item, quantity: 1 })
+        cart.push({ ...item, quantity: 1 });
       }
-      this.$store.commit('setQuantity', cart.length)
-      sessionStorage.setItem('cart', JSON.stringify(cart))
+      this.$store.commit("setQuantity", cart.length);
+      sessionStorage.setItem("cart", JSON.stringify(cart));
     },
     onAddToCard() {
       this.addToCart(this.productDetail);
       this.showProductDetail = false;
-    }
+    },
   },
 };
 </script>
@@ -275,6 +313,10 @@ export default {
         overflow: hidden;
         text-align: center;
         position: relative;
+
+        img {
+          width: 100%;
+        }
       }
 
       .product-name {
@@ -325,7 +367,7 @@ export default {
         border-radius: 10px;
         background: #fff;
         justify-content: space-around;
-        transition: .3s all ease-in-out;
+        transition: 0.3s all ease-in-out;
         box-shadow: 0 0 5px 0px #ccc;
       }
 
@@ -367,7 +409,7 @@ export default {
     cursor: pointer;
 
     &::after {
-      content: '';
+      content: "";
       top: 3px;
       right: 5px;
       z-index: -1;
@@ -428,7 +470,6 @@ export default {
       padding-top: 10px;
       border-top: 1px dashed #ececec;
     }
-
   }
 
   .p-actions {

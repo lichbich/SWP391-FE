@@ -10,7 +10,6 @@ export default {
         return formatter.format(value);
     },
     getImageLink: (filePart) => {
-        console.log(filePart);
         return `${process.env.VUE_APP_API}/${filePart}`.split("\\").join('/')
     }
 }
