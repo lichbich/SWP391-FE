@@ -434,6 +434,7 @@ export default {
       newFormData.append("categoryId", formData.categoryId);
       newFormData.append("pPrice", formData.price.toString());
       newFormData.append("pDescription", formData.description);
+      newFormData.append("pQuantity", formData.quantity);
       newFormData.append("file", formData.file);
       return newFormData;
     },
