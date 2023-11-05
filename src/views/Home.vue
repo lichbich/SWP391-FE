@@ -23,7 +23,12 @@
           {{ productTitle }}
         </div>
         <div class="list-product">
-          <div class="product-item" v-for="p in listProd" :key="p.id">
+          <div
+            class="product-item"
+            :class="{ 'sold-out': p.pQuantity <= 0 }"
+            v-for="p in listProd"
+            :key="p.id"
+          >
             <div class="product-img">
               <img :src="$filters.getImageLink(p.img)" alt="" />
               <div class="actions-container">
@@ -214,6 +219,7 @@ export default {
     const { data } = await getCategory();
     this.categories = [...this.categories, ...data.data];
     if (cat) {
+      this.pagination.currentPage = 1;
       this.selectCatId = this.categories.find((c) => c.catName == cat).id;
       this.$router.push({ path: "/home", query: { cat: cat } });
     } else this.$router.push({ path: "/home", query: { cat: "Best Seller" } });
@@ -277,6 +283,7 @@ export default {
       this.getProductList(this.selectCatId);
     },
     onSelectCat(catName) {
+      this.pagination.currentPage = 1;
       this.selectCatId = this.categories.find((c) => c.catName == catName).id;
       this.$router.replace({ path: "/home", query: { cat: catName } });
     },
@@ -391,8 +398,9 @@ export default {
     .product-item {
       display: flex;
       padding: 15px;
-      position: relative;
       height: 280px;
+      border-radius: 5px;
+      position: relative;
       flex-direction: column;
       justify-content: space-between;
       border: 1px solid #ccc;
@@ -513,6 +521,33 @@ export default {
       center;
     background-size: contain;
     transform: rotate(-55deg);
+  }
+
+  .sold-out {
+    pointer-events: none;
+  }
+  .sold-out::before {
+    content: "";
+    top: 0;
+    right: 0;
+    z-index: 3;
+    width: 50px;
+    height: 40px;
+    display: block;
+    position: absolute;
+    background: url("../assets/img/icons/3734383.png") no-repeat center;
+    background-size: contain;
+  }
+  .sold-out::after {
+    content: "";
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+    background: rgba($color: #000000, $alpha: 0.2);
   }
 }
 
