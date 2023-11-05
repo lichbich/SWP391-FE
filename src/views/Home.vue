@@ -79,6 +79,29 @@
             </div>
           </div>
         </div>
+        <nav v-if="pagination.totalPage.length > 0" class="d-flex px-6 mt-3 justify-content-center">
+          <ul class="pagination">
+            <li class="page-item" @click="onChangePage('previous')">
+              <div class="page-link">
+                <span aria-hidden="true">&laquo;</span>
+              </div>
+            </li>
+            <li
+              class="page-item"
+              v-for="page in pagination.totalPage"
+              :key="page"
+              :class="{ active: page == pagination.currentPage - 1 }"
+              @click="onChangePage(page)"
+            >
+              <div class="page-link">{{ page + 1 }}</div>
+            </li>
+            <li class="page-item" @click="onChangePage('next')">
+              <div class="page-link">
+                <span aria-hidden="true">&raquo;</span>
+              </div>
+            </li>
+          </ul>
+        </nav>
       </div>
       <div
         v-if="showProductDetail"
@@ -148,12 +171,17 @@ export default {
       selectCatId: "",
       productDetail: {},
       showProductDetail: false,
+      pagination: {
+        total: 0,
+        viewby: 12,
+        totalPage: 0,
+        currentPage: 1,
+      },
     };
   },
   watch: {
     async selectCatId(val) {
-      const { data } = await getProdcutListByCategory({ categoryId: val });
-      this.listProd = this.handleProductList(data.data);
+      this.getProductList(val);
     },
   },
   async mounted() {
@@ -161,6 +189,19 @@ export default {
     this.categories = data.data;
   },
   methods: {
+    async getProductList(categoryId) {
+      const params = {
+        categoryId: categoryId,
+        size: this.pagination.viewby,
+        page: this.pagination.currentPage - 1,
+      };
+      const { data: listProd } = await getProdcutListByCategory(params);
+      this.listProd = this.handleProductList(listProd.data);
+      this.pagination.total = listProd.total;
+      this.pagination.totalPage = Array.from(
+        Array(Math.ceil(listProd.total / this.pagination.viewby)).keys()
+      );
+    },
     handleProductList(data) {
       return data.map((item) => ({
         ...item,
@@ -179,6 +220,18 @@ export default {
     onAddToCard() {
       this.addToCart(this.productDetail);
       this.showProductDetail = false;
+    },
+    onChangePage(direction) {
+      let { currentPage, totalPage } = this.pagination;
+      if (direction === "next") {
+        if (currentPage < totalPage.length)
+          this.pagination.currentPage = this.pagination.currentPage + 1;
+      } else if (direction === "previous") {
+        if (currentPage - 1 > 0) this.pagination.currentPage = currentPage - 1;
+      } else {
+        this.pagination.currentPage = direction + 1;
+      }
+      this.getProductList(this.selectCatId);
     },
   },
 };
@@ -283,6 +336,7 @@ export default {
       gap: 15px;
       display: grid;
       margin-top: 30px;
+      min-height: 500px;
       border-radius: 10px;
       grid-template-columns: 1fr 1fr 1fr 1fr;
     }
@@ -291,6 +345,7 @@ export default {
       display: flex;
       padding: 15px;
       position: relative;
+      height: 280px;
       flex-direction: column;
       justify-content: space-between;
       border: 1px solid #ccc;
