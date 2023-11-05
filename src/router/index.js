@@ -27,32 +27,20 @@ const router = createRouter({
       component: HomeLayout,
       children: [
         {
-          path: "/home",
+          path: "home",
           name: "Home",
           component: Home,
         },
         {
-          path: "/cart",
+          path: "cart",
           name: "Cart",
           component: Cart,
         },
         {
-          path: "/checkout",
+          path: "checkout",
           name: "Checkout",
           component: Checkout,
-        },
-        {
-          path: "signin",
-          name: "Signin",
-          meta: { isAuthPage: true },
-          component: Signin,
-        },
-        {
-          path: "signup",
-          name: "Signup",
-          meta: { isAuthPage: true },
-          component: Signup,
-        },
+        }
       ]
     },
     {
@@ -109,6 +97,16 @@ const router = createRouter({
           component: Signup,
         },
       ]
+    },
+    {
+      path: "/sign-in",
+      name: "Signin",
+      component: Signin,
+    },
+    {
+      path: "/sign-up",
+      name: "Signup",
+      component: Signup,
     },
     {
       path: "/:pathMatch(.*)*",

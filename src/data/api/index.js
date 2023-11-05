@@ -35,3 +35,7 @@ export const updateCategory = (formData) => {
 export const deleteCategory = (id) => {
     return axios.delete(`/category/delete/${id}`)
 }
+
+export const getOrderList = (params) => {
+    return axios.get("/order", { params })
+}
