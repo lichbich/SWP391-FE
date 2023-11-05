@@ -72,7 +72,7 @@ export default createStore({
       if (isProductExist) {
         state.cart = state.cart.map((c) => ({
           ...c,
-          quantity: c.id === p.id ? c.quantity + 1 : c.quantity
+          quantity: 1
         }))
       } else {
         p.quantity = 1;

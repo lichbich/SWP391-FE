@@ -63,7 +63,7 @@ export default {
       this.$toast("Logout successfully!");
       this.$store.state.isAdminAuth = false;
       this.$router.go("/admin");
-      sessionStorage.clear();
+      localStorage.clear();
     },
   },
   components: {

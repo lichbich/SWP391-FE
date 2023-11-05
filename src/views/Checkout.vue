@@ -105,7 +105,8 @@ export default {
         this.$store.commit("clearCartData");
         this.$toast("Create successfully", true);
       } catch (error) {
-        this.$toast("Create failure", false);
+        console.log(error)
+        this.$toast(error?.response?.data?.message, false);
       }
     },
   },

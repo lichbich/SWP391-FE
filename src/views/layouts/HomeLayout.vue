@@ -7,10 +7,10 @@
             <img src="../../assets/img/logos/home-logo.png" alt="" />
           </router-link>
         </div>
-        <div class="search-area">
-          <input type="text" placeholder="I'm searching for..." />
-          <div class="search-btn">Search</div>
-        </div>
+<!--        <div class="search-area">-->
+<!--          <input type="text" placeholder="I'm searching for..." />-->
+<!--          <div class="search-btn">Search</div>-->
+<!--        </div>-->
         <div class="action-area">
           <router-link to="/cart" class="action-btn">
             <svg
@@ -123,6 +123,7 @@ export default {
       this.$store.state.user = false;
       this.$store.state.isClientAuth = false;
       this.$router.go("/");
+      localStorage.clear();
     },
   },
 };
