@@ -74,7 +74,7 @@ export default {
       return this.$route.name;
     },
     userName() {
-      return JSON.parse(sessionStorage.getItem('user')).u_name;
+      return JSON.parse(sessionStorage.getItem('user'))?.u_name;
     }
   },
 };
