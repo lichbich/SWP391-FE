@@ -49,7 +49,7 @@
                   <p class="mx-auto mb-4 text-sm">
                     Don't have an account?
                     <router-link
-                      to="/admin/signup"
+                      :to="pathSignUp"
                       class="text-success text-gradient font-weight-bold"
                       >Sign up</router-link
                     >
@@ -98,6 +98,22 @@ export default {
     ArgonInput,
     ArgonButton,
   },
+  async beforeCreate() {
+    if (this.$route.path === "/sign-in") {
+      try {
+        const { data } = await this.$http.get("/auth/check-authentication");
+        this.$store.state.isClientAuth = true;
+        this.$store.state.user = data.data;
+        this.$router.push("/");
+      } catch (error) {
+        // const errorMsg =
+        //   typeof error.response.data.message === "object"
+        //     ? error.response.data.message[0]
+        //     : error.response.data.message;
+        // this.$toast(errorMsg, false);
+      }
+    }
+  },
   created() {
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
@@ -120,6 +136,16 @@ export default {
       },
     };
   },
+  computed: {
+    pathSignUp() {
+      console.log(this.$route.path);
+      if (this.$route.path === "/admin/signin") {
+        return "/admin/signup";
+      } else {
+        return "/sign-up";
+      }
+    },
+  },
   methods: {
     async onLogin(submitEvent) {
       this.formData.email = submitEvent.target.elements.email.value;
@@ -131,10 +157,27 @@ export default {
           password: this.formData.passwrod,
         };
         const user = (await this.$http.post("/auth/login", formData)).data.data;
-        sessionStorage.setItem('user', JSON.stringify(user));
+
+        if (this.$route.path === "/admin/signin" && user.role === "admin") {
+          this.$store.state.user = user;
+          this.$store.state.isAdminAuth = true;
+          router.push("/admin/dashboard");
+        } else if (
+          this.$route.path === "/admin/signin" &&
+          user.role !== "admin"
+        ) {
+          this.$store.state.user = {};
+          this.$store.state.isAdminAuth = false;
+          router.push("/admin/dashboard");
+          this.$toast("You don't have permission to access this page", false);
+        } else {
+          this.$store.state.user = user;
+          this.$store.state.isAdminAuth = user.role === "admin";
+          this.$store.state.isClientAuth = user.role === "member";
+          router.push("/");
+        }
+
         this.$toast("Login successfully!");
-        this.$store.state.isAdminAuth = true;
-        router.push("/admin/dashboard");
       } catch (error) {
         const errorMsg =
           typeof error.response.data.message === "object"

@@ -101,10 +101,12 @@ const router = createRouter({
     {
       path: "/sign-in",
       component: Signin,
+      meta: { isAuthPage: true },
     },
     {
       path: "/sign-up",
       component: Signup,
+      meta: { isAuthPage: true },
     },
     {
       path: "/:pathMatch(.*)*",
@@ -116,15 +118,20 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const isAdminAuth = store.state.isAdminAuth;
-  // const isClientAuth = false;
+  const isClientAuth = store.state.isClientAuth;
   const isAuthPage = to.meta.isAuthPage;
   const toAdminRoute = to.path.split('/')[1] === 'admin';
+
   if (toAdminRoute && isAdminAuth && !isAuthPage) {
     next()
   } else if (toAdminRoute && !isAdminAuth && !isAuthPage) {
     next('/admin/signin')
   } else if (toAdminRoute && !isAdminAuth && isAuthPage) {
     next()
+  } else if (!toAdminRoute && isClientAuth && !isAuthPage) {
+    next()
+  } else if (!toAdminRoute && isClientAuth && isAuthPage) {
+    next('/')
   } else {
     next()
   }

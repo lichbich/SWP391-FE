@@ -34,21 +34,53 @@
                   name="name"
                   placeholder="Name"
                   aria-label="Name"
-                  :value="formData.userName"
+                  v-model="v$.formData.userName.$model"
+                  :errorMsg="
+                    v$.formData.userName.$errors.length
+                      ? v$.formData.userName.$errors[0].$message
+                      : ''
+                  "
                 />
                 <argon-input
                   type="email"
                   name="email"
                   placeholder="Email"
                   aria-label="Email"
-                  :value="formData.userEmail"
+                  v-model="v$.formData.userEmail.$model"
+                  :errorMsg="
+                    v$.formData.userEmail.$errors.length
+                      ? v$.formData.userEmail.$errors[0].$message
+                      : ''
+                  "
                 />
                 <argon-input
                   type="password"
                   name="password"
                   placeholder="Password"
                   aria-label="Password"
-                  :value="formData.userPassword"
+                  v-model="v$.formData.userPassword.$model"
+                  :errorMsg="
+                    v$.formData.userPassword.$errors.length
+                      ? v$.formData.userPassword.$errors[0].$message
+                      : ''
+                  "
+                />
+                <argon-input
+                  type="text"
+                  name="address"
+                  placeholder="Address"
+                  v-model="v$.formData.userAddress.$model"
+                />
+                <argon-input
+                  type="text"
+                  name="phoneNumber"
+                  placeholder="Phone Number"
+                  v-model="v$.formData.userPhoneNumber.$model"
+                  :errorMsg="
+                    v$.formData.userPhoneNumber.$errors.length
+                      ? v$.formData.userPhoneNumber.$errors[0].$message
+                      : ''
+                  "
                 />
                 <div class="text-center">
                   <argon-button
@@ -62,7 +94,7 @@
                 <p class="text-sm mt-3 mb-0">
                   Already have an account?
                   <router-link
-                    to="/admin/signin"
+                    :to="pathSignIn"
                     class="text-dark font-weight-bolder"
                     >Sign in</router-link
                   >
@@ -77,10 +109,13 @@
   <app-footer />
 </template>
 
-<script>
+<script >
+import useVuelidate from "@vuelidate/core";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
 import ArgonInput from "@/components/ArgonInput.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
+import { numeric, required } from "@vuelidate/validators";
+
 const body = document.getElementsByTagName("body")[0];
 
 export default {
@@ -89,6 +124,22 @@ export default {
     AppFooter,
     ArgonInput,
     ArgonButton,
+  },
+  async beforeCreate() {
+    if (this.$route.path === "/sign-up") {
+      try {
+        const { data } = await this.$http.get("/auth/check-authentication");
+        this.$store.state.isClientAuth = true;
+        this.$store.state.user = data.data;
+        this.$router.push("/");
+      } catch (error) {
+        // const errorMsg =
+        //   typeof error.response.data.message === "object"
+        //     ? error.response.data.message[0]
+        //     : error.response.data.message;
+        // this.$toast(errorMsg, false);
+      }
+    }
   },
   created() {
     this.$store.state.hideConfigButton = true;
@@ -104,28 +155,58 @@ export default {
     this.$store.state.showFooter = true;
     body.classList.add("bg-gray-100");
   },
+  setup() {
+    return { v$: useVuelidate() };
+  },
+  computed: {
+    pathSignIn() {
+      if (this.$route.path === "/admin/signup") {
+        return "/admin/signin";
+      } else {
+        return "/sign-in";
+      }
+    },
+  },
   data() {
     return {
       formData: {
         userName: "",
         userEmail: "",
+        userAddress: "",
         userPassword: "",
+        userPhoneNumber: "",
+      },
+    };
+  },
+  validations() {
+    return {
+      formData: {
+        userName: { required },
+        userEmail: { required },
+        userAddress: {},
+        userPassword: { required },
+        userPhoneNumber: { required, numeric },
       },
     };
   },
   methods: {
-    async onSignUp(submitEvent) {
-      this.formData.userName = submitEvent.target.elements.name.value;
-      this.formData.userEmail = submitEvent.target.elements.email.value;
-      this.formData.userPassword = submitEvent.target.elements.password.value;
-
+    async onSignUp() {
+      this.v$.$touch();
+      if (this.v$.$invalid) return;
       try {
         const user = {
           u_name: this.formData.userName,
           u_email: this.formData.userEmail,
+          u_address: this.formData.userAddress,
+          u_phone: this.formData.userPhoneNumber,
           u_password: this.formData.userPassword,
         };
         await this.$http.post("/auth/sign-up", user);
+        if (this.$route.path === "/admin/signup") {
+          this.$router.push("/admin/signin");
+        } else {
+          this.$router.push("/sign-in");
+        }
         this.$toast("Sign up successfully!");
       } catch (error) {
         const errorMsg =

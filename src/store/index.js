@@ -3,6 +3,7 @@ import { createStore } from "vuex";
 export default createStore({
   state: {
     // auth
+    user: {},
     isAdminAuth: false,
     isClientAuth: false,
     // config
@@ -23,7 +24,6 @@ export default createStore({
     layout: "default",
     loading: false,
     quantity: 0,
-    user: {}
   },
   mutations: {
     toggleConfigurator(state) {
