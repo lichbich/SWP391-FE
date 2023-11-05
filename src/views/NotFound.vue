@@ -53,7 +53,7 @@
         </div>
       </div>
     </div>
-    <router-view />
+    <div>Not Foud Page</div>
     <div style="margin-top: 60px">asd</div>
   </div>
 </template>
