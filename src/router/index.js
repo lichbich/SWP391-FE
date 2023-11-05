@@ -6,9 +6,6 @@ import AdminLayout from "../views/layouts/AdminLayout.vue";
 import Home from "../views/Home.vue";
 import Cart from "../views/Cart.vue";
 import Checkout from "../views/Checkout.vue";
-import Dashboard from "../views/Dashboard.vue";
-import ShopView from "../views/ShopView.vue"
-import Tables from "../views/Tables.vue";
 import ProductList from "../views/ProductList.vue";
 import ProductBestSeller from "../views/ProductBestSeller.vue";
 import CategoryList from "../views/CategoryList.vue";
@@ -47,24 +44,9 @@ const router = createRouter({
     {
       path: "/admin",
       name: "/admin",
-      redirect: '/admin/dashboard',
+      redirect: '/admin/productlist',
       component: AdminLayout,
       children: [
-        {
-          path: "dashboard",
-          name: "dashboard",
-          component: Dashboard,
-        },
-        {
-          path: "shopview",
-          name: "shopview",
-          component: ShopView,
-        },
-        {
-          path: "tables",
-          name: "Tables",
-          component: Tables,
-        },
         {
           path: "productlist",
           name: "ProductList",

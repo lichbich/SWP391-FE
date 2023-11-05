@@ -161,7 +161,7 @@ export default {
         if (this.$route.path === "/admin/signin" && user.role === "admin") {
           this.$store.state.user = user;
           this.$store.state.isAdminAuth = true;
-          router.push("/admin/dashboard");
+          router.push("/admin/productlist");
         } else if (
           this.$route.path === "/admin/signin" &&
           user.role !== "admin"
@@ -169,7 +169,7 @@ export default {
           this.$store.state.user = {};
           this.$store.state.isAdminAuth = false;
           this.$toast("You don't have permission to access this page", false);
-          router.push("/admin/dashboard");
+          router.push("/admin/productlist");
         } else {
           this.$store.state.user = user;
           this.$store.state.isAdminAuth = user.role === "admin";

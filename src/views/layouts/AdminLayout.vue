@@ -13,7 +13,7 @@ export default {
       if (user.data.role === "admin") {
         this.$store.state.isAdminAuth = true;
         this.$store.state.user = user.data;
-        this.$router.push("/admin/dashboard");
+        this.$router.push("/admin/productlist");
       }
     } catch (error) {
       // const errorMsg =

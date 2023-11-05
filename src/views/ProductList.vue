@@ -357,11 +357,7 @@ export default {
         this.v$.$touch();
         if (this.v$.$invalid) return;
         const formData = new FormData(this.$refs.productForm);
-        if (this.mode === "edit")
-          await updateProduct(
-            this.makeFormData(this.formData),
-            this.formData.id
-          );
+        if (this.mode === "edit") await updateProduct(this.makeFormData(this.formData), this.formData.id);
         else await createProduct(formData);
 
         this.getProductList();
@@ -432,10 +428,11 @@ export default {
     makeFormData(formData) {
       const newFormData = new FormData();
       newFormData.append("id", formData.id);
-      newFormData.append("pName", formData.productName);
-      newFormData.append("pPrice", formData.price.toString());
       newFormData.append("isActive", formData.status);
+      newFormData.append("pName", formData.productName);
+      newFormData.append("pQuantity", formData.quantity);
       newFormData.append("categoryId", formData.categoryId);
+      newFormData.append("pPrice", formData.price.toString());
       newFormData.append("pDescription", formData.description);
       newFormData.append("file", formData.file);
       return newFormData;

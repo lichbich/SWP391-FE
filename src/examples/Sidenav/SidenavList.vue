@@ -3,18 +3,6 @@
     <ul class="navbar-nav">
       <li class="nav-item">
         <sidenav-item
-          url="/admin/dashboard"
-          :class="getRoute() === '/admin/dashboard' ? 'active' : ''"
-          navText="Dashboard"
-        >
-          <template v-slot:icon>
-            <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
-          </template>
-        </sidenav-item>
-      </li>
-
-      <li class="nav-item">
-        <sidenav-item
           url="/admin/productlist"
           :class="getRoute() === '/admin/productlist' ? 'active' : ''"
           navText="Product List"
