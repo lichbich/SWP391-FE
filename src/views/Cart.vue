@@ -18,8 +18,15 @@
                     </span>
                   </div>
                 </div>
+                <div class="product-total">
+                  <span>Item in shop</span>
+                  <span class="real-price">
+                    {{
+                     p.pQuantity
+                    }}
+                  </span>
+                </div>
                 <div class="product-quantity">
-                  <span>Qty</span>
                   <div class="quantity-container">
                     <span class="minus" @click="subProduct(p)">-</span>
                     <span>{{ p.quantity }}</span>
@@ -102,6 +109,7 @@ export default {
       this.calculateQuantity(item, false);
     },
     addProduct(item) {
+      if(item.quantity === item.pQuantity) return;
       this.calculateQuantity(item, true);
     },
     calculateQuantity(item, add = true) {

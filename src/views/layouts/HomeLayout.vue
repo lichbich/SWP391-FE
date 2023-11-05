@@ -123,6 +123,7 @@ export default {
       this.$store.state.user = false;
       this.$store.state.isClientAuth = false;
       this.$router.go("/");
+      localStorage.clear();
     },
   },
 };
