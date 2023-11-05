@@ -43,22 +43,38 @@
           <div class="modal-body">
             <form>
               <div class="mb-3">
-                <label class="col-form-label">Phone Number</label>
+                <label class="col-form-label input-require">Phone Number</label>
                 <input
                   type="text"
                   class="form-control"
                   v-model="formData.phoneNumber"
                   required
+                  maxlength="11"
                 />
+                <div class="error-message">
+                  {{
+                    v$.formData.phoneNumber.$errors.length
+                        ? v$.formData.phoneNumber.$errors[0].$message
+                        : ""
+                  }}
+                </div>
               </div>
               <div class="mb-3">
-                <label class="col-form-label">Address</label>
+                <label class="col-form-label input-require">Address</label>
                 <input
                   type="text"
                   class="form-control"
                   v-model="formData.address"
                   required
+                  maxlength="100"
                 />
+                <div class="error-message">
+                  {{
+                    v$.formData.address.$errors.length
+                        ? v$.formData.address.$errors[0].$message
+                        : ""
+                  }}
+                </div>
               </div>
             </form>
           </div>
@@ -82,15 +98,28 @@
   
 <script>
 import { mapState } from "vuex";
+import useVuelidate from "@vuelidate/core";
+import {numeric, required} from "@vuelidate/validators";
 
 export default {
   components: {},
+  setup() {
+    return { v$: useVuelidate() };
+  },
   data() {
     return {
       showModal: false,
       formData: {
         address: "",
         phoneNumber: "",
+      },
+    };
+  },
+  validations() {
+    return {
+      formData: {
+        address: { required },
+        phoneNumber: { required, numeric },
       },
     };
   },
@@ -102,8 +131,11 @@ export default {
   },
   methods: {
     onSave() {
+      this.v$.$touch();
+      if (this.v$.$invalid) return;
       this.showModal = false;
       this.$emit("order", this.formData);
+      this.v$.$reset();
     },
     show() {
       this.formData.address = this.userInfo?.u_email;
