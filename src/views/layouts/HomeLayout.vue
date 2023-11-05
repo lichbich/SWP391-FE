@@ -33,7 +33,7 @@
             </svg>
             <span class="card-count">{{ quantity }}</span>
           </router-link>
-          <div class="action-btn">
+          <router-link to="/sign-in" v-if="!isClientAuth" class="action-btn">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -49,6 +49,13 @@
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
+          </router-link>
+          <div v-else class="action-btn">
+            <span class="account-text"> Wellcome {{ userInfo.u_name }} </span>
+            <span class="logout-text" @click="logout">
+              <i class="fa fa-sign-out me-sm-2"></i>
+              <span class="d-sm-inline d-none">Logout</span>
+            </span>
           </div>
         </div>
       </div>
@@ -61,6 +68,7 @@
 </template>
   
 <script>
+import { mapState } from "vuex";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
 const body = document.getElementsByTagName("body")[0];
 
@@ -102,6 +110,19 @@ export default {
   computed: {
     quantity() {
       return this.$store.getters.quantity;
+    },
+    ...mapState({
+      userInfo: (state) => state.user,
+      isClientAuth: (state) => state.isClientAuth,
+    }),
+  },
+  methods: {
+    async logout() {
+      await this.$http.get("/auth/logout");
+      this.$toast("Logout successfully!");
+      this.$store.state.user = false;
+      this.$store.state.isClientAuth = false;
+      this.$router.go("/");
     },
   },
 };
@@ -215,6 +236,20 @@ export default {
       padding: 5px 15px;
       border-left: 1px solid #eee;
     }
+  }
+
+  .account-text {
+    font-size: 14px;
+    font-weight: bold;
+    color: #0da487;
+  }
+
+  .logout-text {
+    margin-left: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
   }
 }
 </style>
