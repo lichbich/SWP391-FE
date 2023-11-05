@@ -10,7 +10,7 @@ export default {
   async beforeCreate() {
     try {
       const { data: user } = await this.$http.get("/auth/check-authentication");
-      if (user.role === "admin") {
+      if (user.data.role === "admin") {
         this.$store.state.isAdminAuth = true;
         this.$store.state.user = user.data;
         this.$router.push("/admin/dashboard");
