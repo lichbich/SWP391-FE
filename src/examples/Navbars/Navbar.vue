@@ -22,7 +22,7 @@
             <div class="px-0 nav-link font-weight-bold text-white">
               <i class="fa fa-user me-sm-2"></i>
               <span class="d-sm-inline d-none" style="margin-right: 20px"
-                >Wellcome Ngoc!</span
+                >Wellcome {{userName}}!</span
               >
               <div style="display: inline; cursor: pointer" @click="logout">
                 <i class="fa fa-sign-out me-sm-2"></i>
@@ -73,6 +73,9 @@ export default {
     currentRouteName() {
       return this.$route.name;
     },
+    userName() {
+      return JSON.parse(sessionStorage.getItem('user')).u_name;
+    }
   },
 };
 </script>

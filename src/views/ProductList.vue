@@ -31,12 +31,10 @@
                     </th>
                   </tr>
                 </thead>
-                <tbody
-                  v-for="product in products"
-                  v-bind:key="product"
-                  :id="product.id"
-                >
-                  <tr>
+                <tbody>
+                  <tr v-for="product in products"
+                      v-bind:key="product"
+                      :id="product.id">
                     <td style="max-width: 200px" class="tooltip-custom">
                       <span class="text-secondary text-xs font-weight-bold" data-bs-toggle="tooltip" :title="product.pName">{{
                           product.pName
@@ -52,12 +50,12 @@
                         {{ product.pQuantity }}
                       </p>
                     </td>
-                    <td class="align-middle text-center text-sm" style="max-width: 100px" >
+                    <td style="max-width: 100px" >
                       <p class="text-center text-xs font-weight-bold mb-0">
                         {{ product.isActive ? 'Active' : 'Sold' }}
                       </p>
                     </td>
-                    <td class="align-middle text-left tooltip-custom" style="max-width: 300px">
+                    <td class="tooltip-custom" style="max-width: 300px">
                       <span class="text-secondary text-xs font-weight-bold" data-bs-toggle="tooltip" :title="product.pDescription">{{
                         product.pDescription
                       }}</span>
@@ -71,6 +69,7 @@
                     <td class="align-middle text-center">
                       <button
                         type="button"
+                        style="margin: 0"
                         class="btn btn-primary me-2"
                         data-bs-toggle="modal-edit"
                         data-bs-target="#staticBackdrop-edit"
@@ -80,6 +79,7 @@
                       </button>
                       <button
                         type="button"
+                        style="margin: 0"
                         class="btn btn-danger"
                         @click="onDelete(product)"
                       >
@@ -385,7 +385,7 @@ export default {
     onChangePage(direction) {
       let { currentPage, totalPage } = this.pagination;
       if (direction === "next") {
-        if (currentPage - 1 < totalPage.length)
+        if (currentPage < totalPage.length)
           this.pagination.currentPage = this.pagination.currentPage + 1;
       } else if (direction === "previous") {
         if (currentPage - 1 > 0) this.pagination.currentPage = currentPage - 1;

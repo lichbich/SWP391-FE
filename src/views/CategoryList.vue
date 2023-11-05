@@ -31,12 +31,10 @@
                       {{ header }}
                     </th>
                   </thead>
-                  <tbody
-                    v-for="category in categories"
-                    v-bind:key="category"
-                    :id="category.id"
-                  >
-                    <tr>
+                  <tbody>
+                    <tr v-for="category in categories"
+                        v-bind:key="category"
+                        :id="category.id">
                       <td class="tooltip-custom" style="max-width: 100px">
                           <span class="text-secondary text-xs font-weight-bold" data-bs-toggle="tooltip" :title="category.catName">{{
                               category.catName
@@ -48,9 +46,15 @@
                             }}</span>
                       </td>
                       <td class="align-middle text-center" style="max-width: 100px">
+                          <span class="text-secondary text-xs font-weight-bold">{{
+                              category.isActive ? 'Active' : 'Inactive'
+                            }}</span>
+                      </td>
+                      <td class="align-middle text-center" style="max-width: 100px">
                         <button
                           type="button"
                           class="btn btn-primary me-2"
+                          style="margin: 0"
                           data-bs-toggle="modal-edit"
                           data-bs-target="#staticBackdrop-edit"
                           @click="onEdit(category)"
@@ -60,6 +64,7 @@
                         <button
                           type="button"
                           class="btn btn-danger"
+                          style="margin: 0"
                           @click="onDelete(category.id)"
                         >
                           Delete
@@ -213,7 +218,7 @@ export default {
         currentPage: 1,
       },
       categories: [],
-      headers: ["Category Name", "Description", "Action"],
+      headers: ["Category Name", "Description", "Status", "Action"],
     };
   },
   validations() {
@@ -234,6 +239,7 @@ export default {
         size: this.pagination.viewby,
         page: this.pagination.currentPage - 1,
       };
+      console.log(params)
       const { data: listProd } = await getCategoryList(params);
       this.categories = listProd.data;
       this.pagination.total = listProd.total;
@@ -281,7 +287,7 @@ export default {
     onChangePage(direction) {
       let { currentPage, totalPage } = this.pagination;
       if (direction === "next") {
-        if (currentPage - 1 < totalPage.length)
+        if (currentPage < totalPage.length)
           this.pagination.currentPage = this.pagination.currentPage + 1;
       } else if (direction === "previous") {
         if (currentPage - 1 > 0) this.pagination.currentPage = currentPage - 1;
