@@ -222,7 +222,11 @@ export default {
       this.pagination.currentPage = 1;
       this.selectCatId = this.categories.find((c) => c.catName == cat).id;
       this.$router.push({ path: "/home", query: { cat: cat } });
-    } else this.$router.push({ path: "/home", query: { cat: "Best Seller" } });
+    } else {
+      this.selectCatId = "1";
+      this.pagination.currentPage = 1;
+      this.$router.push({ path: "/home", query: { cat: "Best Seller" } });
+    }
   },
   methods: {
     async getProductList(categoryId) {
