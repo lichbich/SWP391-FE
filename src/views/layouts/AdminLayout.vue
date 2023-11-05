@@ -11,7 +11,7 @@ export default {
     try {
       const { data } = await this.$http.get("/auth/check-authentication");
       this.$store.state.isAdminAuth = true;
-      this.$store.state.adminInfo = data.data;
+      this.$store.state.user = data.data;
       this.$router.replace("/admin/dashboard");
     } catch (error) {
       // const errorMsg =
