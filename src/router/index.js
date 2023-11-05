@@ -10,6 +10,7 @@ import Dashboard from "../views/Dashboard.vue";
 import ShopView from "../views/ShopView.vue"
 import Tables from "../views/Tables.vue";
 import ProductList from "../views/ProductList.vue";
+import ProductBestSeller from "../views/ProductBestSeller.vue";
 import CategoryList from "../views/CategoryList.vue";
 import OrderList from "../views/OrderList.vue";
 import Profile from "../views/Profile.vue";
@@ -68,6 +69,11 @@ const router = createRouter({
           path: "productlist",
           name: "ProductList",
           component: ProductList,
+        },
+        {
+          path: "product-best-seller",
+          name: "ProductBestSeller",
+          component: ProductBestSeller,
         },
         {
           path: "categoryList",

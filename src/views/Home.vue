@@ -8,15 +8,20 @@
             class="category-item"
             v-for="c in categories"
             :key="c.id"
-            :class="{ active: c.id === selectCatId }"
-            @click="selectCatId = c.id"
+            :class="{
+              active: c.id === selectCatId,
+              'best-seller': c.id == 1,
+            }"
+            @click="onSelectCat(c.catName)"
           >
             {{ c.catName }}
           </li>
         </ul>
       </div>
       <div class="product-area">
-        <div class="title">Product List</div>
+        <div class="title" :class="{ 'p-best-seller': selectCatId == 1 }">
+          {{ productTitle }}
+        </div>
         <div class="list-product">
           <div class="product-item" v-for="p in listProd" :key="p.id">
             <div class="product-img">
@@ -79,7 +84,10 @@
             </div>
           </div>
         </div>
-        <nav v-if="pagination.totalPage.length > 0" class="d-flex px-6 mt-3 justify-content-center">
+        <nav
+          v-if="pagination.totalPage.length > 0"
+          class="d-flex px-6 mt-3 justify-content-center"
+        >
           <ul class="pagination">
             <li class="page-item" @click="onChangePage('previous')">
               <div class="page-link">
@@ -147,6 +155,7 @@
 const body = document.getElementsByTagName("body")[0];
 
 import { getCategory, getProdcutListByCategory } from "@/data/api";
+import { getProdcutBestSeller } from "../data/api";
 
 export default {
   name: "Home",
@@ -167,7 +176,15 @@ export default {
   data() {
     return {
       listProd: [],
-      categories: [],
+      categories: [
+        {
+          id: "1",
+          catName: "Best Seller",
+          catDescription: "",
+          isActive: true,
+          delYn: false,
+        },
+      ],
       selectCatId: "",
       productDetail: {},
       showProductDetail: false,
@@ -179,28 +196,54 @@ export default {
       },
     };
   },
+  computed: {
+    productTitle() {
+      return (
+        this.categories.find((c) => c.id === this.selectCatId)?.catName ||
+        "Product List"
+      );
+    },
+  },
   watch: {
     async selectCatId(val) {
       this.getProductList(val);
     },
   },
   async mounted() {
+    const cat = this.$route.query.cat;
     const { data } = await getCategory();
-    this.categories = data.data;
+    this.categories = [...this.categories, ...data.data];
+    if (cat) {
+      this.selectCatId = this.categories.find((c) => c.catName == cat).id;
+      this.$router.push({ path: "/home", query: { cat: cat } });
+    } else this.$router.push({ path: "/home", query: { cat: "Best Seller" } });
   },
   methods: {
     async getProductList(categoryId) {
-      const params = {
-        categoryId: categoryId,
-        size: this.pagination.viewby,
-        page: this.pagination.currentPage - 1,
-      };
-      const { data: listProd } = await getProdcutListByCategory(params);
-      this.listProd = this.handleProductList(listProd.data);
-      this.pagination.total = listProd.total;
-      this.pagination.totalPage = Array.from(
-        Array(Math.ceil(listProd.total / this.pagination.viewby)).keys()
-      );
+      if (this.selectCatId !== "1") {
+        const params = {
+          categoryId: categoryId,
+          size: this.pagination.viewby,
+          page: this.pagination.currentPage - 1,
+        };
+        const { data: listProd } = await getProdcutListByCategory(params);
+        this.listProd = this.handleProductList(listProd.data);
+        this.pagination.total = listProd.total;
+        this.pagination.totalPage = Array.from(
+          Array(Math.ceil(listProd.total / this.pagination.viewby)).keys()
+        );
+      } else {
+        const params = {
+          size: this.pagination.viewby,
+          page: this.pagination.currentPage - 1,
+        };
+        const { data: listProd } = await getProdcutBestSeller(params);
+        this.listProd = this.handleProductList(listProd.data);
+        this.pagination.total = listProd.total;
+        this.pagination.totalPage = Array.from(
+          Array(Math.ceil(listProd.total / this.pagination.viewby)).keys()
+        );
+      }
     },
     handleProductList(data) {
       return data.map((item) => ({
@@ -232,6 +275,10 @@ export default {
         this.pagination.currentPage = direction + 1;
       }
       this.getProductList(this.selectCatId);
+    },
+    onSelectCat(catName) {
+      this.selectCatId = this.categories.find((c) => c.catName == catName).id;
+      this.$router.replace({ path: "/home", query: { cat: catName } });
     },
   },
 };
@@ -438,6 +485,34 @@ export default {
         visibility: visible;
       }
     }
+  }
+
+  .best-seller::before {
+    content: "";
+    right: 120px;
+    width: 50px;
+    top: -15px;
+    height: 40px;
+    display: block;
+    position: absolute;
+    background: url("../assets/img/icons/pngaaa.com-3003256.png") no-repeat
+      center;
+    background-size: contain;
+    transform: rotate(-55deg);
+  }
+
+  .p-best-seller::after {
+    content: "";
+    right: -40px;
+    width: 50px;
+    top: -10px;
+    height: 40px;
+    display: block;
+    position: absolute;
+    background: url("../assets/img/icons/pngaaa.com-3003256.png") no-repeat
+      center;
+    background-size: contain;
+    transform: rotate(-55deg);
   }
 }
 

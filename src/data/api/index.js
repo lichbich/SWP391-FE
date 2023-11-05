@@ -8,6 +8,22 @@ export const getProdcutListByCategory = (params) => {
     return axios.get('/product/getByCategory', { params })
 }
 
+export const getProdcutNoneBestSeller = (params) => {
+    return axios.get('/product/none-best-seller', { params })
+}
+
+export const getProdcutBestSeller = (params) => {
+    return axios.get('/product/best-seller', { params })
+}
+
+export const addBestSellerTagApi = (id) => {
+    return axios.get(`/product/add-best-seller/${id}`)
+}
+
+export const removeBestSellerTagApi = (id) => {
+    return axios.get(`/product/remove-best-seller/${id}`)
+}
+
 export const getCategory = () => {
     return axios.get('/category')
 }

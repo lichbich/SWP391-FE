@@ -26,6 +26,17 @@
       </li>
       <li class="nav-item">
         <sidenav-item
+          url="/admin/product-best-seller"
+          :class="getRoute() === '/admin/best-seller' ? 'active' : ''"
+          navText="Product Best Seller"
+        >
+          <template v-slot:icon>
+            <i class="fa fa-product-hunt text-success text-sm opacity-10"></i>
+          </template>
+        </sidenav-item>
+      </li>
+      <li class="nav-item">
+        <sidenav-item
           url="/admin/categoryList"
           :class="getRoute() === '/admin/categoryList' ? 'active' : ''"
           navText="Category List"
