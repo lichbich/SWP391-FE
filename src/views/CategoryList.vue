@@ -22,7 +22,7 @@
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
                 <table class="table align-items-center mb-0">
-                  <thead>
+                  <thead style="text-align: center">
                     <th
                       class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-8"
                       v-for="(header, index) in headers"
@@ -37,19 +37,17 @@
                     :id="category.id"
                   >
                     <tr>
-                      <td>
-                        <div class="d-flex flex-column justify-content-center">
-                          <h6 class="mb-0 text-sm">{{ category.catName }}</h6>
-                        </div>
+                      <td class="tooltip-custom" style="max-width: 100px">
+                          <span class="text-secondary text-xs font-weight-bold" data-bs-toggle="tooltip" :title="category.catName">{{
+                              category.catName
+                            }}</span>
                       </td>
-                      <td>
-                        <div class="d-flex flex-column justify-content-center">
-                          <h6 class="mb-0 text-sm">
-                            {{ category.catDescription }}
-                          </h6>
-                        </div>
+                      <td class="tooltip-custom" style="max-width: 300px">
+                          <span class="text-secondary text-xs font-weight-bold" data-bs-toggle="tooltip" :title="category.catDescription">{{
+                              category.catDescription
+                            }}</span>
                       </td>
-                      <td class="align-middle">
+                      <td class="align-middle text-center" style="max-width: 100px">
                         <button
                           type="button"
                           class="btn btn-primary me-2"
