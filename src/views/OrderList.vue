@@ -10,52 +10,50 @@
             <div class="table-responsive p-0">
               <table class="table align-items-center mb-0">
                 <thead>
-                  <th
-                    class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-8"
+                <th
+                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-8 text-center"
                     v-for="(header, index) in headers"
                     :key="index"
-                  >
-                    {{ header }}
-                  </th>
-                </thead>
-                <tbody
-                  v-for="order in orderList"
-                  v-bind:key="order"
-                  :id="order.orderId"
                 >
-                  <tr>
-                    <td>
-                      <p class="text-left text-xs font-weight-bold mb-0">
-                        {{ order.user.u_name }}
-                      </p>
-                    </td>
-                    <td>
-                      <p class="text-left text-xs font-weight-bold mb-0">
-                        {{ order.o_address }}
-                      </p>
-                    </td>
-                    <td>
-                      <p class="text-left text-xs font-weight-bold mb-0">
-                        {{ order.o_phone }}
-                      </p>
-                    </td>
-                    <td>
-                      <p class="text-left text-xs font-weight-bold mb-0">
-                        {{ order.createdAt }}
-                      </p>
-                    </td>
-                    <td>
-                      <p class="text-left text-xs font-weight-bold mb-0">
-                        {{ order.o_status }}
-                      </p>
-                    </td>
-                  </tr>
+                  {{ header }}
+                </th>
+                </thead>
+                <tbody>
+                <tr v-for="order in orderList"
+                    v-bind:key="order"
+                    :id="order.id">
+                  <td style="width: 200px">
+                    <p class="text-left text-xs font-weight-bold mb-0">
+                      {{ order.user.u_name }}
+                    </p>
+                  </td>
+                  <td style="width: 300px">
+                    <p class="text-left text-xs font-weight-bold mb-0">
+                      {{ order.o_address }}
+                    </p>
+                  </td>
+                  <td style="width: 150px" class="text-center">
+                    <p class="text-left text-xs font-weight-bold mb-0">
+                      {{ order.o_phone }}
+                    </p>
+                  </td>
+                  <td style="width: 200px">
+                    <p class="text-center text-xs font-weight-bold mb-0">
+                      {{ order.createdAt }}
+                    </p>
+                  </td>
+                  <td style="width: 100px">
+                    <p class="text-center text-xs font-weight-bold mb-0">
+                      {{ getStatus(order.o_status) }}
+                    </p>
+                  </td>
+                </tr>
                 </tbody>
               </table>
               <p></p>
               <nav
-                aria-label="Page navigation example"
-                class="d-flex px-6 justify-content-end"
+                  aria-label="Page navigation example"
+                  class="d-flex px-6 justify-content-end"
               >
                 <ul class="pagination">
                   <li class="page-item" @click="onChangePage('previous')">
@@ -64,11 +62,11 @@
                     </div>
                   </li>
                   <li
-                    class="page-item"
-                    v-for="page in pagination.totalPage"
-                    :key="page"
-                    :class="{ active: page == pagination.currentPage - 1 }"
-                    @click="onChangePage(page)"
+                      class="page-item"
+                      v-for="page in pagination.totalPage"
+                      :key="page"
+                      :class="{ active: page === pagination.currentPage - 1 }"
+                      @click="onChangePage(page)"
                   >
                     <div class="page-link">{{ page + 1 }}</div>
                   </li>
@@ -89,12 +87,12 @@
 
 <script>
 import useVuelidate from "@vuelidate/core";
-import { getOrderList } from "../data/api";
+import {getOrderList} from "@/data/api";
 
 export default {
   name: "OrderList",
   setup() {
-    return { v$: useVuelidate() };
+    return {v$: useVuelidate()};
   },
   data() {
     return {
@@ -117,16 +115,15 @@ export default {
         size: this.pagination.viewby,
         page: this.pagination.currentPage - 1,
       };
-      const { data: listProd } = await getOrderList(params);
+      const {data: listProd} = await getOrderList(params);
       this.orderList = listProd.data;
       this.pagination.total = listProd.total;
       this.pagination.totalPage = Array.from(
-        Array(Math.ceil(listProd.total / this.pagination.viewby)).keys()
+          Array(Math.ceil(listProd.total / this.pagination.viewby)).keys()
       );
     },
     onChangePage(direction) {
-      let { currentPage, totalPage } = this.pagination;
-      console.log(currentPage, totalPage.length);
+      let {currentPage, totalPage} = this.pagination;
       if (direction === "next") {
         if (currentPage < totalPage.length)
           this.pagination.currentPage = this.pagination.currentPage + 1;
@@ -137,6 +134,24 @@ export default {
       }
       this.getProductList();
     },
+    getStatus(status) {
+      let text = ''
+      switch (status) {
+        case 0:
+          text = 'PENDING'
+          break;
+        case 1:
+          text = 'SHIPPING'
+          break;
+        case 2:
+          text = 'COMPLETE'
+          break;
+        case 3:
+          text = 'CANCEL'
+          break;
+      }
+      return text;
+    }
   },
 };
 </script>

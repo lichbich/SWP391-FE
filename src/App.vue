@@ -87,4 +87,23 @@ export default {
     content: '*';
     color: red;
 }
+.tooltip-custom {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tooltip-custom-text{
+  display:none;
+  position:absolute;
+  z-index:100;
+  background-color:white;
+  border: 1px solid black;
+  padding:3px;
+  color:black;
+  top:20px;
+  left:20px;
+}
+
+.tooltip-custom:hover span.tooltip-custom-text{
+  display:block;
+}
 </style>

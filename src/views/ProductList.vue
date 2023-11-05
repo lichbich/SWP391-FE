@@ -21,7 +21,7 @@
             <div class="table-responsive p-0">
               <table class="table align-items-center mb-0">
                 <thead>
-                  <tr>
+                  <tr style="text-align: center">
                     <th
                       class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-8"
                       v-for="(header, index) in headers"
@@ -31,48 +31,45 @@
                     </th>
                   </tr>
                 </thead>
-                <tbody
-                  v-for="product in products"
-                  v-bind:key="product"
-                  :id="product.id"
-                >
-                  <tr>
-                    <td>
-                      <div class="d-flex px-2 py-1">
-                        <div class="d-flex flex-column justify-content-center">
-                          <h6 class="mb-0 text-sm">{{ product.pName }}</h6>
-                        </div>
-                      </div>
+                <tbody>
+                  <tr v-for="product in products"
+                      v-bind:key="product"
+                      :id="product.id">
+                    <td style="max-width: 200px" class="tooltip-custom">
+                      <span class="text-secondary text-xs font-weight-bold" data-bs-toggle="tooltip" :title="product.pName">{{
+                          product.pName
+                        }}</span>
                     </td>
-                    <td>
+                    <td style="max-width: 100px">
                       <p class="text-center text-xs font-weight-bold mb-0">
                         {{ product.pPrice }}
                       </p>
                     </td>
-                    <td>
+                    <td style="max-width: 100px">
                       <p class="text-center text-xs font-weight-bold mb-0">
                         {{ product.pQuantity }}
                       </p>
                     </td>
-                    <td class="align-middle text-center text-sm">
-                      <span class="badge badge-sm bg-gradient-success"
-                        >Active</span
-                      >
+                    <td style="max-width: 100px" >
+                      <p class="text-center text-xs font-weight-bold mb-0">
+                        {{ product.isActive ? 'Active' : 'Sold' }}
+                      </p>
                     </td>
-                    <td class="align-middle text-left">
-                      <span class="text-secondary text-xs font-weight-bold">{{
+                    <td class="tooltip-custom" style="max-width: 300px">
+                      <span class="text-secondary text-xs font-weight-bold" data-bs-toggle="tooltip" :title="product.pDescription">{{
                         product.pDescription
                       }}</span>
                     </td>
-                    <td class="align-middle text-left">
+                    <td class="align-middle text-center">
                       <img
                         :src="$filters.getImageLink(product.pImgLink)"
                         style="width: 40px; height: 40px"
                       />
                     </td>
-                    <td class="align-middle">
+                    <td class="align-middle text-center">
                       <button
                         type="button"
+                        style="margin: 0"
                         class="btn btn-primary me-2"
                         data-bs-toggle="modal-edit"
                         data-bs-target="#staticBackdrop-edit"
@@ -82,6 +79,7 @@
                       </button>
                       <button
                         type="button"
+                        style="margin: 0"
                         class="btn btn-danger"
                         @click="onDelete(product)"
                       >
@@ -155,6 +153,7 @@
                     class="form-control"
                     name="pName"
                     v-model="v$.formData.productName.$model"
+                    maxlength="100"
                   />
                   <div class="error-message">
                     {{
@@ -194,6 +193,7 @@
                     class="form-control"
                     name="pPrice"
                     v-model="v$.formData.price.$model"
+                    maxlength="10"
                   />
                   <div class="error-message">
                     {{
@@ -210,6 +210,7 @@
                     class="form-control"
                     name="pQuantity"
                     v-model="v$.formData.quantity.$model"
+                    maxlength="10"
                   />
                   <div class="error-message">
                     {{
@@ -233,6 +234,7 @@
                 <div class="mb-3">
                   <label class="col-form-label">Description</label>
                   <textarea
+                    maxlength="1000"
                     class="form-control"
                     name="pDescription"
                     v-model="formData.description"
@@ -282,6 +284,7 @@ import {
   getProdcutList,
   updateProduct,
 } from "../data/api";
+import http from "@/axios";
 
 export default {
   name: "ProductList",
@@ -405,7 +408,15 @@ export default {
         pImgLink: product.file || product.pImgLink,
       };
     },
-    onDelete() {},
+    async onDelete(item) {
+      try {
+        await http.delete(`${process.env.VUE_APP_API}/api/product/delete/${item.id}`)
+        await this.getProductList();
+        this.$toast("Delete successfully", true);
+      } catch (error) {
+        this.$toast("Delete failure", false);
+      }
+    },
     onCloseModal() {
       this.mode = "";
       this.showModal = false;
