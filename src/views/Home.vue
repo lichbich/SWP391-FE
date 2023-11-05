@@ -174,19 +174,7 @@ export default {
       this.productDetail = p;
     },
     addToCart(item) {
-      let cart = [];
-      let storage = sessionStorage.getItem("cart");
-      if (storage) {
-        cart = JSON.parse(storage);
-      }
-      let product = cart.find((el) => el.id === item.id);
-      if (product) {
-        product.quantity += 1;
-      } else {
-        cart.push({ ...item, quantity: 1 });
-      }
-      this.$store.commit("setQuantity", cart.length);
-      sessionStorage.setItem("cart", JSON.stringify(cart));
+      this.$store.commit("setCartData", item);
     },
     onAddToCard() {
       this.addToCart(this.productDetail);

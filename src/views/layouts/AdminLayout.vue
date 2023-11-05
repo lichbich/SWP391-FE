@@ -9,10 +9,12 @@ export default {
   name: "Admin",
   async beforeCreate() {
     try {
-      const { data } = await this.$http.get("/auth/check-authentication");
-      this.$store.state.isAdminAuth = true;
-      this.$store.state.user = data.data;
-      this.$router.replace("/admin/dashboard");
+      const { data: user } = await this.$http.get("/auth/check-authentication");
+      if (user.role === "admin") {
+        this.$store.state.isAdminAuth = true;
+        this.$store.state.user = user.data;
+        this.$router.push("/admin/dashboard");
+      }
     } catch (error) {
       // const errorMsg =
       //   typeof error.response.data.message === "object"

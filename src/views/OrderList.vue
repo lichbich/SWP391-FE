@@ -126,8 +126,9 @@ export default {
     },
     onChangePage(direction) {
       let { currentPage, totalPage } = this.pagination;
+      console.log(currentPage, totalPage.length);
       if (direction === "next") {
-        if (currentPage - 1 < totalPage.length)
+        if (currentPage < totalPage.length)
           this.pagination.currentPage = this.pagination.currentPage + 1;
       } else if (direction === "previous") {
         if (currentPage - 1 > 0) this.pagination.currentPage = currentPage - 1;

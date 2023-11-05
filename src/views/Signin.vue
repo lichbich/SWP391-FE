@@ -168,8 +168,8 @@ export default {
         ) {
           this.$store.state.user = {};
           this.$store.state.isAdminAuth = false;
-          router.push("/admin/dashboard");
           this.$toast("You don't have permission to access this page", false);
+          router.push("/admin/dashboard");
         } else {
           this.$store.state.user = user;
           this.$store.state.isAdminAuth = user.role === "admin";

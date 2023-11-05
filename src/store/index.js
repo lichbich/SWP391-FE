@@ -6,6 +6,8 @@ export default createStore({
     user: {},
     isAdminAuth: false,
     isClientAuth: false,
+    // cart
+    cart: [],
     // config
     hideConfigButton: false,
     isPinned: true,
@@ -60,6 +62,46 @@ export default createStore({
       } else {
         state.isNavFixed = false;
       }
+    },
+    initCartData(state) {
+      state.cart = JSON.parse(localStorage.getItem('p_cart')) || [];
+    },
+    setCartData(state, p) {
+      const isProductExist = state.cart.some(prod => prod.id === p.id);
+
+      if (isProductExist) {
+        state.cart = state.cart.map((c) => ({
+          ...c,
+          quantity: c.id === p.id ? c.quantity + 1 : c.quantity
+        }))
+      } else {
+        p.quantity = 1;
+        state.cart.push(p);
+      }
+
+      localStorage.setItem('p_cart', JSON.stringify(state.cart))
+    },
+    addCartQuantity(state, { p, isAdd }) {
+      state.cart = state.cart.map((el) => {
+        let product = el.id === p.id;
+
+        if (product && isAdd) {
+          el.quantity += 1;
+        } else if (product && !isAdd && el.quantity > 1) {
+          el.quantity -= 1;
+        }
+        return el
+      })
+
+      localStorage.setItem('p_cart', JSON.stringify(state.cart))
+    },
+    removeCartItem(state, p) {
+      state.cart = state.cart.filter(prod => prod.id !== p.id);
+      localStorage.setItem('p_cart', JSON.stringify(state.cart))
+    },
+    clearCartData(state) {
+      state.cart = [];
+      localStorage.setItem('p_cart', JSON.stringify([]))
     }
   },
   actions: {
@@ -69,7 +111,7 @@ export default createStore({
   },
   getters: {
     loading: (state) => state.loading,
-    quantity: (state) => state.quantity,
+    quantity: (state) => state.cart.length,
     user: (state) => state.user,
   }
 });

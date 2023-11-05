@@ -54,16 +54,21 @@
       </div>
     </div>
     <router-view />
-    <div style="margin-top: 60px">asd</div>
+    <div style="margin-top: 60px">
+      <app-footer />
+    </div>
   </div>
 </template>
   
 <script>
+import AppFooter from "@/examples/PageLayout/Footer.vue";
 const body = document.getElementsByTagName("body")[0];
 
 export default {
   name: "Home",
-  components: {},
+  components: {
+    AppFooter,
+  },
   async beforeCreate() {
     try {
       const { data } = await this.$http.get("/auth/check-authentication");
@@ -84,6 +89,8 @@ export default {
     this.$store.state.showSidenav = false;
     this.$store.state.showFooter = false;
     body.classList.remove("bg-gray-100");
+
+    this.$store.commit("initCartData");
   },
   beforeUnmount() {
     this.$store.state.hideConfigButton = false;
