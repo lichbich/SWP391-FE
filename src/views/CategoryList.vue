@@ -1,43 +1,182 @@
 <template>
-  <div class="py-4 container-fluid">
-    <div class=" row">
-      <div class="col-12">
-        <category-table ref="categoryTable" @onAddNew="onOpenAddNew" @onEdit="onEdit"></category-table>
+  <div>
+    <div class="py-4 container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header pb-0">
+              <h6>Category List</h6>
+
+              <div class="row" style="display: flex">
+                <div class="col" style="display: flex; justify-content: end">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    @click="showModal = true"
+                  >
+                    Add Category
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+              <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <th
+                      class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-8"
+                      v-for="(header, index) in headers"
+                      :key="index"
+                    >
+                      {{ header }}
+                    </th>
+                  </thead>
+                  <tbody
+                    v-for="category in categories"
+                    v-bind:key="category"
+                    :id="category.id"
+                  >
+                    <tr>
+                      <td>
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">{{ category.catName }}</h6>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">
+                            {{ category.catDescription }}
+                          </h6>
+                        </div>
+                      </td>
+                      <td class="align-middle">
+                        <button
+                          type="button"
+                          class="btn btn-primary me-2"
+                          data-bs-toggle="modal-edit"
+                          data-bs-target="#staticBackdrop-edit"
+                          @click="onEdit(category)"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-danger"
+                          @click="onDelete(category.id)"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p></p>
+                <nav
+                  aria-label="Page navigation example"
+                  class="d-flex px-6 justify-content-end"
+                >
+                  <ul class="pagination">
+                    <li class="page-item" @click="onChangePage('previous')">
+                      <div class="page-link">
+                        <span aria-hidden="true">&laquo;</span>
+                      </div>
+                    </li>
+                    <li
+                      class="page-item"
+                      v-for="page in pagination.totalPage"
+                      :key="page"
+                      :class="{ active: page == pagination.currentPage - 1 }"
+                      @click="onChangePage(page)"
+                    >
+                      <div class="page-link">{{ page + 1 }}</div>
+                    </li>
+                    <li class="page-item" @click="onChangePage('next')">
+                      <div class="page-link">
+                        <span aria-hidden="true">&raquo;</span>
+                      </div>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Modal -->
-  <div v-if="showModal" class="modal" id="staticBackdrop1" data-bs-backdrop="static">
-    <div class="modal-dialog">
-      <div class="modal-content" style="min-width: 500px">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Product</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form class="needs-validation">
-            <div class="mb-3 form-group">
-              <label class="col-form-label input-require">Category Name</label>
-              <input type="text" class="form-control" v-model="item.catName" maxlength="100">
-<!--              <div class="error-message">{{ v.catName.$errors[0]?.$message }}</div>-->
-            </div>
-            <div class="mb-3">
-              <label class="col-form-label">Status</label>
-              <select class="form-select" aria-label="Default select example" v-model="item.isActive">
-                <option :value="true">Active</option>
-                <option :value="false">Inactive</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label class="col-form-label">Description</label>
-              <textarea class="form-control" v-model="item.catDescription" maxlength="1000"></textarea>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="onCloseAddNew">Close</button>
-          <button type="button" class="btn btn-primary" @click="onSave">Save</button>
+    <!-- Modal -->
+    <div
+      v-if="showModal"
+      class="modal"
+      id="staticBackdrop1"
+      data-bs-backdrop="static"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content" style="min-width: 500px">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">
+              {{ isEdit ? "Edit Product" : "Add Product" }}
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form class="needs-validation" ref="formCategory">
+              <div class="mb-3 form-group">
+                <label class="col-form-label input-require">
+                  Category Name
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="v$.formData.catName.$model"
+                  maxlength="100"
+                />
+                <div class="error-message">
+                  {{
+                    v$.formData.catName.$errors.length
+                      ? v$.formData.catName.$errors[0].$message
+                      : ""
+                  }}
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="col-form-label">Status</label>
+                <select
+                  class="form-select"
+                  aria-label="Default select example"
+                  v-model="v$.formData.isActive.$model"
+                >
+                  <option :value="true">Active</option>
+                  <option :value="false">Inactive</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="col-form-label">Description</label>
+                <textarea
+                  class="form-control"
+                  v-model="v$.formData.catDescription.$model"
+                  maxlength="1000"
+                ></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              @click="resetFormData"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" @click="onSave">
+              Save
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -45,69 +184,114 @@
 </template>
 
 <script>
-import CategoryTable from "./components/CategoryTable.vue";
-import http from "@/axios";
-import {reactive} from "vue";
+import useVuelidate from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
+import {
+  createCategory,
+  deleteCategory,
+  getCategoryList,
+  updateCategory,
+} from "../data/api";
+
 export default {
   name: "CategoryList",
-  components: {
-    CategoryTable,
-    // ProjectsTable
-  },
-  setup(){
-    const item = reactive({
-      catName:'',
-      catDescription: '',
-      isActive: true
-    });
-    // const rules = computed(() => ({
-    //   catName: {
-    //     required$,
-    //   }
-    // }));
-
-    // const v = useVuelidate(rules, item);
-    return { item }
+  setup() {
+    return { v$: useVuelidate() };
   },
   data() {
     return {
+      isEdit: false,
       showModal: false,
-      isEdit: false
+      formData: {
+        id: "",
+        catName: "",
+        catDescription: "",
+        isActive: true,
+      },
+      pagination: {
+        total: 0,
+        viewby: 10,
+        totalPage: 0,
+        currentPage: 1,
+      },
+      categories: [],
+      headers: ["Category Name", "Description", "Action"],
     };
   },
+  validations() {
+    return {
+      formData: {
+        catName: { required },
+        catDescription: {},
+        isActive: {},
+      },
+    };
+  },
+  mounted() {
+    this.getAllCategory();
+  },
   methods: {
+    async getAllCategory() {
+      const params = {
+        size: this.pagination.viewby,
+        page: this.pagination.currentPage - 1,
+      };
+      const { data: listProd } = await getCategoryList(params);
+      this.categories = listProd.data;
+      this.pagination.total = listProd.total;
+      this.pagination.totalPage = Array.from(
+        Array(Math.ceil(listProd.total / this.pagination.viewby)).keys()
+      );
+    },
     async onSave() {
       try {
-        // this.v.$touch();
-        // if (this.v.$invalid) return;
-        if(this.isEdit){
-          await http.post(`${process.env.VUE_APP_API}/api/category/update`, this.item);
-          this.isEdit = false
-        }else await http.post(`${process.env.VUE_APP_API}/api/category`, this.item);
-        await this.$refs.categoryTable.getAllCategory();
-        this.onCloseAddNew();
+        this.v$.$touch();
+        if (this.v$.$invalid) return;
+        if (this.isEdit) await updateCategory(this.formData);
+        else await createCategory(this.formData);
+
+        this.getAllCategory();
+        this.resetFormData();
+
         this.$toast("Create successfully", true);
       } catch (error) {
         this.$toast("Create failure", false);
       }
     },
-    onOpenAddNew() {
+    async onDelete(id) {
+      await deleteCategory(id);
+      await this.getAllCategory();
+      this.$toast("Delete successfully", true);
+    },
+    onEdit(item) {
+      this.formData = Object.assign({}, item);
+      this.isEdit = true;
       this.showModal = true;
     },
-    onCloseAddNew() {
-      this.item = {
-        categoryName: '',
-        description: ''
-      }
+    resetFormData() {
+      this.formData = {
+        id: "",
+        catName: "",
+        catDescription: "",
+        isActive: true,
+      };
+      this.v$.$reset();
       this.isEdit = false;
       this.showModal = false;
+      this.$refs.formCategory.reset();
     },
-    onEdit(item){
-      this.item = Object.assign({}, item);
-      this.isEdit = true
-      this.showModal = true
-    }
-  }
-
+    onChangePage(direction) {
+      let { currentPage, totalPage } = this.pagination;
+      if (direction === "next") {
+        if (currentPage - 1 < totalPage.length)
+          this.pagination.currentPage = this.pagination.currentPage + 1;
+      } else if (direction === "previous") {
+        if (currentPage - 1 > 0) this.pagination.currentPage = currentPage - 1;
+      } else {
+        this.pagination.currentPage = direction + 1;
+      }
+      this.getAllCategory();
+    },
+  },
 };
 </script>
