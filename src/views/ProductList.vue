@@ -437,6 +437,7 @@ export default {
       newFormData.append("isActive", formData.status);
       newFormData.append("categoryId", formData.categoryId);
       newFormData.append("pDescription", formData.description);
+      newFormData.append("pQuantity", formData.quantity);
       newFormData.append("file", formData.file);
       return newFormData;
     },
