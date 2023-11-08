@@ -179,11 +179,7 @@ export default {
 
         this.$toast("Login successfully!");
       } catch (error) {
-        const errorMsg =
-          typeof error.response.data.message === "object"
-            ? error.response.data.message[0]
-            : error.response.data.message;
-        this.$toast(errorMsg, false);
+        this.$toast(error.response.data.message, false);
       }
     },
   },
