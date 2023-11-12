@@ -1,6 +1,6 @@
 <template>
   <div class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display: block;
-  position: absolute; top: 25px; right: 25px; background-color: #fff">
+  position: absolute; top: 25px; right: 25px; background-color: #fff; z-index: 1000000000;">
     <div class="d-flex">
       <img v-if="success" style="margin-left: 10px" src="@/assets/img/icons/check-circle.svg"
            alt="user1" />
@@ -20,7 +20,7 @@ export default {
   name: "Toast",
   props:{
     msg:{type:String,required:true},
-    timeout:{type:Number,default:2000, validate:function (val){return val >= 0}},
+    timeout:{type:Number,default:3000, validate:function (val){return val >= 0}},
     clickToClose:{type:Boolean, default: true},
     success:{type:Boolean, default: true},
     close:{type:Function,required: true},
