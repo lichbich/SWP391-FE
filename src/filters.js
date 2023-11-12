@@ -3,7 +3,7 @@ export default {
         if (typeof value !== "number") {
             return value;
         }
-        var formatter = new Intl.NumberFormat('en-US', {
+        const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD'
         });

@@ -5,9 +5,7 @@ import router from "./router";
 import ToastPlugin from "./toastPlugin";
 import "./assets/css/nucleo-icons.css";
 import "./assets/css/nucleo-svg.css";
-// import "ant-design-vue/dist/reset.css";
 import ArgonDashboard from "./argon-dashboard";
-// import {Table} from 'ant-design-vue'
 import axios from "./axios";
 import globalFilter from './filters';
 
