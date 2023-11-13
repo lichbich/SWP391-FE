@@ -14,6 +14,7 @@ import Profile from "../views/Profile.vue";
 import NotFound from "../views/NotFound.vue";
 import Signup from "../views/SignUp.vue";
 import Signin from "../views/Signin.vue";
+import HomeSearch from "@/views/HomeSearch";
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
           path: "checkout",
           name: "Checkout",
           component: Checkout,
+        },
+        {
+          path: "search",
+          name: "search",
+          component: HomeSearch,
         }
       ]
     },

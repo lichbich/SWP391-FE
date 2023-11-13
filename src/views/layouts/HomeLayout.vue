@@ -7,10 +7,10 @@
             <img src="../../assets/img/logos/home-logo.png" alt="" />
           </router-link>
         </div>
-<!--        <div class="search-area">-->
-<!--          <input type="text" placeholder="I'm searching for..." />-->
-<!--          <div class="search-btn">Search</div>-->
-<!--        </div>-->
+        <div class="search-area">
+          <input type="text" placeholder="I'm searching for..." v-model="searchText"/>
+          <div class="search-btn" @click="onSearch">Search</div>
+        </div>
         <div class="action-area">
           <router-link to="/cart" class="action-btn">
             <svg
@@ -107,6 +107,11 @@ export default {
     this.$store.state.showFooter = true;
     body.classList.add("bg-gray-100");
   },
+  data() {
+    return {
+      searchText: ''
+    }
+  },
   computed: {
     quantity() {
       return this.$store.getters.quantity;
@@ -125,6 +130,9 @@ export default {
       this.$router.go("/");
       localStorage.clear();
     },
+    onSearch() {
+      this.$router.push({ path: "/search", query: { search: this.searchText } });
+    }
   },
 };
 </script>
