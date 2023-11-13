@@ -66,6 +66,18 @@
                   "
                 />
                 <argon-input
+                    type="password"
+                    name="password"
+                    placeholder="Re-Enter the password"
+                    aria-label="Password"
+                    v-model="v$.formData.rePassword.$model"
+                    :errorMsg="
+                    v$.formData.rePassword.$errors.length
+                      ? v$.formData.rePassword.$errors[0].$message
+                      : ''
+                  "
+                />
+                <argon-input
                   type="text"
                   name="address"
                   placeholder="Address"
@@ -114,7 +126,7 @@ import useVuelidate from "@vuelidate/core";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
 import ArgonInput from "@/components/ArgonInput.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
-import { numeric, required } from "@vuelidate/validators";
+import {helpers, numeric, required, sameAs} from "@vuelidate/validators";
 
 const body = document.getElementsByTagName("body")[0];
 
@@ -175,6 +187,7 @@ export default {
         userAddress: "",
         userPassword: "",
         userPhoneNumber: "",
+        rePassword: ""
       },
     };
   },
@@ -185,6 +198,10 @@ export default {
         userEmail: { required },
         userAddress: {},
         userPassword: { required },
+        rePassword: { required, sameAsPassword: helpers.withMessage(
+              "Password and Confirm Password must match",
+              sameAs(this.formData.userPassword)
+          ), },
         userPhoneNumber: { required, numeric },
       },
     };

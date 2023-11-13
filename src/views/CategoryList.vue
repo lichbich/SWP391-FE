@@ -5,10 +5,15 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header pb-0">
-              <h6>Category List</h6>
-
+              <div style="display: flex; justify-content: space-between">
+                <h6>Category List</h6>
+                <div class="search-area">
+                  <input type="text" placeholder="Enter category name..." v-model="searchText"/>
+                  <div class="search-btn" @click="onSearch">Search</div>
+                </div>
+              </div>
               <div class="row" style="display: flex">
-                <div class="col" style="display: flex; justify-content: end">
+                <div class="col" style="display: flex; justify-content: end; margin-top: 10px">
                   <button
                     type="button"
                     class="btn btn-primary"
@@ -219,6 +224,7 @@ export default {
       },
       categories: [],
       headers: ["Category Name", "Description", "Status", "Action"],
+      searchText: ''
     };
   },
   validations() {
@@ -236,16 +242,21 @@ export default {
   methods: {
     async getAllCategory() {
       const params = {
+        searchName: this.searchText,
         size: this.pagination.viewby,
         page: this.pagination.currentPage - 1,
       };
-      console.log(params)
       const { data: listProd } = await getCategoryList(params);
       this.categories = listProd.data;
       this.pagination.total = listProd.total;
       this.pagination.totalPage = Array.from(
         Array(Math.ceil(listProd.total / this.pagination.viewby)).keys()
       );
+    },
+    onSearch() {
+      this.pagination.viewby = 10
+      this.pagination.currentPage = 1
+      this.getAllCategory()
     },
     async onSave() {
       try {
