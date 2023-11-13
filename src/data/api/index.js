@@ -55,3 +55,11 @@ export const deleteCategory = (id) => {
 export const getOrderList = (params) => {
     return axios.get("/order", { params })
 }
+
+export const updateUser = (formData) => {
+    return axios.post("/user/update", formData)
+}
+
+export const changeUserPassword = (formData) => {
+    return axios.post("/user/change-password", formData)
+}

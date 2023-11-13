@@ -8,7 +8,12 @@
           </router-link>
         </div>
         <div class="search-area">
-          <input type="text" placeholder="I'm searching for..." v-model="searchText"/>
+          <input
+            type="text"
+            placeholder="I'm searching for..."
+            v-model="searchText"
+            @keydown.enter="onSearch"
+          />
           <div class="search-btn" @click="onSearch">Search</div>
         </div>
         <div class="action-area">
@@ -51,7 +56,9 @@
             </svg>
           </router-link>
           <div v-else class="action-btn">
-            <span class="account-text"> Wellcome {{ userInfo.u_name }} </span>
+            <router-link to="/profile">
+              <span class="account-text"> Wellcome {{ userInfo.u_name }} </span>
+            </router-link>
             <span class="logout-text" @click="logout">
               <i class="fa fa-sign-out me-sm-2"></i>
               <span class="d-sm-inline d-none">Logout</span>
@@ -109,8 +116,8 @@ export default {
   },
   data() {
     return {
-      searchText: ''
-    }
+      searchText: "",
+    };
   },
   computed: {
     quantity() {
@@ -131,8 +138,11 @@ export default {
       localStorage.clear();
     },
     onSearch() {
-      this.$router.push({ path: "/search", query: { search: this.searchText } });
-    }
+      this.$router.push({
+        path: "/search",
+        query: { search: this.searchText },
+      });
+    },
   },
 };
 </script>

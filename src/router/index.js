@@ -11,6 +11,8 @@ import ProductBestSeller from "../views/ProductBestSeller.vue";
 import CategoryList from "../views/CategoryList.vue";
 import OrderList from "../views/OrderList.vue";
 import Profile from "../views/Profile.vue";
+import ChangePassword from "../views/ChangePassword.vue";
+import UserProfile from "../views/UserProfile.vue";
 import NotFound from "../views/NotFound.vue";
 import Signup from "../views/SignUp.vue";
 import Signin from "../views/Signin.vue";
@@ -44,7 +46,12 @@ const router = createRouter({
           path: "search",
           name: "search",
           component: HomeSearch,
-        }
+        },
+        {
+          path: "profile",
+          name: "profile",
+          component: UserProfile,
+        },
       ]
     },
     {
@@ -77,6 +84,11 @@ const router = createRouter({
           path: "profile",
           name: "Profile",
           component: Profile,
+        },
+        {
+          path: "change-password",
+          name: "change-password",
+          component: ChangePassword,
         },
         {
           path: "signin",

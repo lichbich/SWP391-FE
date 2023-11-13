@@ -40,6 +40,12 @@ export default createStore({
     setUser(state, val) {
       state.user = val;
     },
+    updateUser(state, val) {
+      state.user = {
+        ...state.user,
+        ...val
+      }
+    },
     navbarMinimize(state) {
       const sidenav_show = document.querySelector(".g-sidenav-show");
 

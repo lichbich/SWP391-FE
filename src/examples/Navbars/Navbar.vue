@@ -1,9 +1,6 @@
 <template>
   <nav
     class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl"
-    :class="
-      this.$store.state.isRTL ? 'top-0 position-sticky z-index-sticky' : ''
-    "
     v-bind="$attrs"
     id="navbarBlur"
     data-scroll="true"
@@ -22,7 +19,7 @@
             <div class="px-0 nav-link font-weight-bold text-white">
               <i class="fa fa-user me-sm-2"></i>
               <span class="d-sm-inline d-none" style="margin-right: 20px"
-                >Wellcome {{userName}}!</span
+                >Wellcome {{ userInfo.u_name }}!</span
               >
               <div style="display: inline; cursor: pointer" @click="logout">
                 <i class="fa fa-sign-out me-sm-2"></i>
@@ -37,7 +34,7 @@
 </template>
 <script>
 import Breadcrumbs from "../Breadcrumbs.vue";
-import { mapMutations, mapActions } from "vuex";
+import { mapMutations, mapActions, mapState } from "vuex";
 
 export default {
   name: "navbar",
@@ -73,9 +70,9 @@ export default {
     currentRouteName() {
       return this.$route.name;
     },
-    userName() {
-      return JSON.parse(sessionStorage.getItem('user'))?.u_name;
-    }
+    ...mapState({
+      userInfo: (state) => state.user,
+    }),
   },
 };
 </script>
