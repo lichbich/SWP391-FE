@@ -99,4 +99,7 @@ export default {
 .tooltip-custom:hover span.tooltip-custom-text{
   display:block;
 }
+.btn {
+  padding: 7px 12px !important;
+}
 </style>

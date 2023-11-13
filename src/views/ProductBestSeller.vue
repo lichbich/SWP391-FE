@@ -4,9 +4,15 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header pb-0">
-            <h6>Product Best Seller</h6>
+            <div style="display: flex; justify-content: space-between">
+              <h6>Product Best Seller</h6>
+              <div class="search-area">
+                <input type="text" placeholder="Enter product name..." v-model="searchText"/>
+                <div class="search-btn" @click="onSearch">Search</div>
+              </div>
+            </div>
             <div class="row" style="display: flex">
-              <div class="col" style="display: flex; justify-content: end">
+              <div class="col" style="display: flex; justify-content: end; margin-top: 10px">
                 <button
                   type="button"
                   class="btn btn-primary"
@@ -154,6 +160,7 @@ export default {
         currentPage: 1,
       },
       showModal: false,
+      searchText: ''
     };
   },
   async mounted() {
@@ -162,6 +169,7 @@ export default {
   methods: {
     async getProductList() {
       const params = {
+        searchName: this.searchText,
         size: this.pagination.viewby,
         page: this.pagination.currentPage - 1,
       };
@@ -171,6 +179,11 @@ export default {
       this.pagination.totalPage = Array.from(
         Array(Math.ceil(listProd.total / this.pagination.viewby)).keys()
       );
+    },
+    onSearch() {
+      this.pagination.viewby = 10
+      this.pagination.currentPage = 1
+      this.getProductList()
     },
     async removeProductBestSeller(pid) {
       await removeBestSellerTagApi(pid);
@@ -198,4 +211,33 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.search-area {
+  width: 500px;
+  display: flex;
+  align-items: center;
+  height: fit-content;
+
+  input {
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
+
+  .search-btn {
+    height: 100%;
+    padding: 3px 3px 3.5px;
+    border: 1px solid #ccc;
+    border-left: none;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    cursor: pointer;
+  }
+}
+</style>
   
