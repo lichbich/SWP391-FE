@@ -163,6 +163,7 @@ export default {
   data() {
     return {
       listProd: [],
+      searchName: '',
       productDetail: {},
       showProductDetail: false,
       pagination: {
@@ -176,7 +177,11 @@ export default {
   watch: {
     '$route.query.search': {
       handler: async function (val) {
-        await this.getProductList(val);
+        if (val) {
+          this.pagination.currentPage = 1;
+          this.searchName = this.$route.query.search;
+          await this.getProductList();
+        }
       },
       deep: true,
       immediate: true
@@ -186,12 +191,12 @@ export default {
 
   },
   async mounted() {
-    await this.getProductList(this.$route.query.search);
+    this.searchName = this.$route.query.search;
   },
   methods: {
-    async getProductList(searchName) {
+    async getProductList() {
       const params = {
-        searchName: searchName,
+        searchName: this.searchName,
         size: this.pagination.viewby,
         page: this.pagination.currentPage - 1,
       };
@@ -231,7 +236,7 @@ export default {
       } else {
         this.pagination.currentPage = direction + 1;
       }
-      this.getProductList(this.selectCatId);
+      this.getProductList();
     }
   },
 };
