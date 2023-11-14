@@ -12,6 +12,7 @@ import CategoryList from "../views/CategoryList.vue";
 import OrderList from "../views/OrderList.vue";
 import Profile from "../views/Profile.vue";
 import ChangePassword from "../views/ChangePassword.vue";
+import ChangeUserPassword from "../views/ChangeUserPassword.vue";
 import UserProfile from "../views/UserProfile.vue";
 import NotFound from "../views/NotFound.vue";
 import Signup from "../views/SignUp.vue";
@@ -49,8 +50,15 @@ const router = createRouter({
         },
         {
           path: "profile",
-          name: "profile",
+          name: "user-profile",
           component: UserProfile,
+          meta: { requireAuth: true }
+        },
+        {
+          path: "change-password",
+          name: "change-user-password",
+          component: ChangeUserPassword,
+          meta: { requireAuth: true }
         },
       ]
     },
@@ -84,11 +92,13 @@ const router = createRouter({
           path: "profile",
           name: "Profile",
           component: Profile,
+          meta: { requireAuth: true }
         },
         {
           path: "change-password",
           name: "change-password",
           component: ChangePassword,
+          meta: { requireAuth: true }
         },
         {
           path: "signin",
@@ -126,6 +136,7 @@ router.beforeEach((to, from, next) => {
   const isAdminAuth = store.state.isAdminAuth;
   const isClientAuth = store.state.isClientAuth;
   const isAuthPage = to.meta.isAuthPage;
+  const isRequireAuth = to.meta.requireAuth;
   const toAdminRoute = to.path.split('/')[1] === 'admin';
 
   if (toAdminRoute && isAdminAuth && !isAuthPage) {
@@ -137,6 +148,8 @@ router.beforeEach((to, from, next) => {
   } else if (!toAdminRoute && isClientAuth && !isAuthPage) {
     next()
   } else if (!toAdminRoute && isClientAuth && isAuthPage) {
+    next('/')
+  } else if (!toAdminRoute && !isClientAuth && !isAuthPage && isRequireAuth) {
     next('/')
   } else {
     next()
