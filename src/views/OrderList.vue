@@ -10,50 +10,91 @@
             <div class="table-responsive p-0">
               <table class="table align-items-center mb-0">
                 <thead>
-                <th
+                  <th
                     class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-8 text-center"
                     v-for="(header, index) in headers"
                     :key="index"
-                >
-                  {{ header }}
-                </th>
+                  >
+                    {{ header }}
+                  </th>
                 </thead>
                 <tbody>
-                <tr v-for="order in orderList"
+                  <tr
+                    v-for="order in orderList"
                     v-bind:key="order"
-                    :id="order.id">
-                  <td style="width: 200px">
-                    <p class="text-left text-xs font-weight-bold mb-0">
-                      {{ order.user.u_name }}
-                    </p>
-                  </td>
-                  <td style="width: 300px">
-                    <p class="text-left text-xs font-weight-bold mb-0">
-                      {{ order.o_address }}
-                    </p>
-                  </td>
-                  <td style="width: 150px" class="text-center">
-                    <p class="text-left text-xs font-weight-bold mb-0">
-                      {{ order.o_phone }}
-                    </p>
-                  </td>
-                  <td style="width: 200px">
-                    <p class="text-center text-xs font-weight-bold mb-0">
-                      {{ order.createdAt }}
-                    </p>
-                  </td>
-                  <td style="width: 100px">
-                    <p class="text-center text-xs font-weight-bold mb-0">
-                      {{ getStatus(order.o_status) }}
-                    </p>
-                  </td>
-                </tr>
+                    :id="order.id"
+                  >
+                    <td style="width: 200px">
+                      <p class="text-left text-xs font-weight-bold mb-0">
+                        {{ order.user.u_name }}
+                      </p>
+                    </td>
+                    <td style="width: 300px">
+                      <p class="text-left text-xs font-weight-bold mb-0">
+                        {{ order.o_address }}
+                      </p>
+                    </td>
+                    <td style="width: 150px" class="text-center">
+                      <p class="text-left text-xs font-weight-bold mb-0">
+                        {{ order.o_phone }}
+                      </p>
+                    </td>
+                    <td style="width: 200px">
+                      <p class="text-center text-xs font-weight-bold mb-0">
+                        {{ new Date(order.createdAt).toLocaleDateString() }}
+                      </p>
+                    </td>
+                    <td style="width: 200px">
+                      <p class="text-center text-xs font-weight-bold mb-0">
+                        {{ $filters.toDollarFormat(getTotalOrderPrice(order)) }}
+                      </p>
+                    </td>
+                    <td style="width: 100px">
+                      <p class="text-center text-xs font-weight-bold mb-0">
+                        {{ getStatus(order.o_status) }}
+                      </p>
+                    </td>
+                    <td style="width: 100px; text-align: center">
+                      <div
+                        v-if="order.o_status === 0"
+                        class="btn btn-secondary"
+                        style="margin: 0; margin-right: 10px"
+                        @click="handleCancel(order.id)"
+                      >
+                        Cancel
+                      </div>
+                      <div
+                        v-if="order.o_status === 0"
+                        class="btn btn-primary"
+                        style="margin: 0"
+                        @click="handleApprove(order.id)"
+                      >
+                        Approve
+                      </div>
+                      <div
+                        v-if="order.o_status === 4"
+                        class="btn btn-primary"
+                        style="margin: 0"
+                        @click="handleShipping(order.id)"
+                      >
+                        Shipping
+                      </div>
+                      <div
+                        v-if="order.o_status === 1"
+                        class="btn btn-primary"
+                        style="margin: 0"
+                        @click="handleComplete(order.id)"
+                      >
+                        Complete
+                      </div>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
               <p></p>
               <nav
-                  aria-label="Page navigation example"
-                  class="d-flex px-6 justify-content-end"
+                aria-label="Page navigation example"
+                class="d-flex px-6 justify-content-end"
               >
                 <ul class="pagination">
                   <li class="page-item" @click="onChangePage('previous')">
@@ -62,11 +103,11 @@
                     </div>
                   </li>
                   <li
-                      class="page-item"
-                      v-for="page in pagination.totalPage"
-                      :key="page"
-                      :class="{ active: page === pagination.currentPage - 1 }"
-                      @click="onChangePage(page)"
+                    class="page-item"
+                    v-for="page in pagination.totalPage"
+                    :key="page"
+                    :class="{ active: page === pagination.currentPage - 1 }"
+                    @click="onChangePage(page)"
                   >
                     <div class="page-link">{{ page + 1 }}</div>
                   </li>
@@ -87,16 +128,30 @@
 
 <script>
 import useVuelidate from "@vuelidate/core";
-import {getOrderList} from "@/data/api";
+import { getOrderList } from "@/data/api";
+import {
+  approveOrder,
+  cancelOrder,
+  completeOrder,
+  shippingOrder,
+} from "../data/api";
 
 export default {
   name: "OrderList",
   setup() {
-    return {v$: useVuelidate()};
+    return { v$: useVuelidate() };
   },
   data() {
     return {
-      headers: ["Receiver", "Address", "Phone", "Create At", "Status"],
+      headers: [
+        "Receiver",
+        "Address",
+        "Phone",
+        "Create At",
+        "Total",
+        "Status",
+        "Action",
+      ],
       pagination: {
         total: 0,
         viewby: 10,
@@ -115,15 +170,31 @@ export default {
         size: this.pagination.viewby,
         page: this.pagination.currentPage - 1,
       };
-      const {data: listProd} = await getOrderList(params);
+      const { data: listProd } = await getOrderList(params);
       this.orderList = listProd.data;
       this.pagination.total = listProd.total;
       this.pagination.totalPage = Array.from(
-          Array(Math.ceil(listProd.total / this.pagination.viewby)).keys()
+        Array(Math.ceil(listProd.total / this.pagination.viewby)).keys()
       );
     },
+    async handleApprove(orderId) {
+      await approveOrder(orderId);
+      this.getProductList();
+    },
+    async handleCancel(orderId) {
+      await cancelOrder(orderId);
+      this.getProductList();
+    },
+    async handleShipping(orderId) {
+      await shippingOrder(orderId);
+      this.getProductList();
+    },
+    async handleComplete(orderId) {
+      await completeOrder(orderId);
+      this.getProductList();
+    },
     onChangePage(direction) {
-      let {currentPage, totalPage} = this.pagination;
+      let { currentPage, totalPage } = this.pagination;
       if (direction === "next") {
         if (currentPage < totalPage.length)
           this.pagination.currentPage = this.pagination.currentPage + 1;
@@ -135,23 +206,31 @@ export default {
       this.getProductList();
     },
     getStatus(status) {
-      let text = ''
+      let text = "";
       switch (status) {
         case 0:
-          text = 'PENDING'
+          text = "PENDING";
           break;
         case 1:
-          text = 'SHIPPING'
+          text = "SHIPPING";
           break;
         case 2:
-          text = 'COMPLETE'
+          text = "COMPLETE";
           break;
         case 3:
-          text = 'CANCEL'
+          text = "CANCEL";
+          break;
+        case 4:
+          text = "APPROVE";
           break;
       }
       return text;
-    }
+    },
+    getTotalOrderPrice(order) {
+      return order.product_orders.reduce((total, nextProduct) => {
+        return total + nextProduct.price;
+      }, 0);
+    },
   },
 };
 </script>

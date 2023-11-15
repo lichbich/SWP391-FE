@@ -56,6 +56,22 @@ export const getOrderList = (params) => {
     return axios.get("/order", { params })
 }
 
+export const approveOrder = (id) => {
+    return axios.get(`/order/approve/${id}`)
+}
+
+export const cancelOrder = (id) => {
+    return axios.get(`/order/cancel/${id}`)
+}
+
+export const shippingOrder = (id) => {
+    return axios.get(`/order/shipping/${id}`)
+}
+
+export const completeOrder = (id) => {
+    return axios.get(`/order/complete/${id}`)
+}
+
 export const updateUser = (formData) => {
     return axios.post("/user/update", formData)
 }
