@@ -159,8 +159,7 @@
 <script>
 const body = document.getElementsByTagName("body")[0];
 
-import { getCategory, getProdcutListByCategory } from "@/data/api";
-import { getProdcutBestSeller } from "../data/api";
+import {getCategory, getProdcutBestSellerCustomer, getProdcutListByCategory} from "@/data/api";
 
 export default {
   name: "Home",
@@ -247,7 +246,7 @@ export default {
           size: this.pagination.viewby,
           page: this.pagination.currentPage - 1,
         };
-        const { data: listProd } = await getProdcutBestSeller(params);
+        const { data: listProd } = await getProdcutBestSellerCustomer(params);
         this.listProd = this.handleProductList(listProd.data);
         this.pagination.total = listProd.total;
         this.pagination.totalPage = Array.from(

@@ -16,6 +16,10 @@ export const getProdcutBestSeller = (params) => {
     return axios.get('/product/best-seller', { params })
 }
 
+export const getProdcutBestSellerCustomer = (params) => {
+    return axios.get('/product/best-seller-customer', { params })
+}
+
 export const addBestSellerTagApi = (id) => {
     return axios.get(`/product/add-best-seller/${id}`)
 }
