@@ -152,6 +152,10 @@ export default {
       this.formData.passwrod = submitEvent.target.elements.password.value;
 
       try {
+        if(!this.formData.email || !this.formData.passwrod) {
+          this.$toast('Please enter email or password', false);
+          return;
+        }
         const formData = {
           email: this.formData.email,
           password: this.formData.passwrod,
