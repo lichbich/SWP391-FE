@@ -128,6 +128,44 @@
         </div>
       </div>
     </div>
+
+    <div
+                v-if="showDeleteModal"
+                class="modal"
+                id="staticBackdrop"
+                data-bs-backdrop="static"
+              >
+                <div class="modal-dialog">
+                  <div class="modal-content" style="min-width: 500px">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                        Cancel Confirm
+                      </h1>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      Do you want to cancel?
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        @click="onCloseDeleteModal"
+                      >
+                        Close
+                      </button>
+                      <button type="submit" class="btn btn-primary" @click="onConfirmDelete">
+                        Confirm
+                      </button>
+                    </div>
+                  </div>
+                </div>
+            </div>
   </div>
 </template>
 
@@ -165,6 +203,8 @@ export default {
         currentPage: 1,
       },
       orderList: [],
+      showDeleteModal: false,
+      deleteItem: null
     };
   },
   mounted() {
@@ -187,9 +227,22 @@ export default {
       await approveOrder(orderId);
       this.getProductList();
     },
-    async handleCancel(orderId) {
-      await cancelOrder(orderId);
-      this.getProductList();
+    async handleCancel(id) {
+      this.deleteItem = id;
+      this.showDeleteModal = true;
+    },
+    async onConfirmDelete() {
+      try {
+       await cancelOrder(this.deleteItem);
+        this.getProductList();
+      } catch (error) {
+        this.$toast("Cancel failure", false);
+      } finally {
+        this.showDeleteModal = false;
+      }
+    },
+    onCloseDeleteModal() {
+      this.showDeleteModal = false;
     },
     async handleShipping(orderId) {
       await shippingOrder(orderId);

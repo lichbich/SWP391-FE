@@ -140,7 +140,7 @@
           <div class="modal-content" style="min-width: 500px">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                Add Product
+                {{ mode !== "edit" ? "Add Product" : "Edit Product" }}
               </h1>
               <button
                 type="button"
@@ -277,6 +277,44 @@
           </div>
         </div>
       </div>
+
+      <div
+          v-if="showDeleteModal"
+          class="modal"
+          id="staticBackdrop"
+          data-bs-backdrop="static"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content" style="min-width: 500px">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                  Delete Confirm
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                Do you want to delete?
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  @click="onCloseDeleteModal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary" @click="onConfirmDelete">
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
   </div>
 </template>
@@ -328,7 +366,9 @@ export default {
         currentPage: 1,
       },
       showModal: false,
-      searchText: ''
+      searchText: '',
+      showDeleteModal: false,
+      deleteItem: {}
     };
   },
   validations() {
@@ -418,13 +458,22 @@ export default {
       };
     },
     async onDelete(item) {
+      this.deleteItem = item;
+      this.showDeleteModal = true;
+    },
+    async onConfirmDelete(){
       try {
-        await http.delete(`${process.env.VUE_APP_API}/api/product/delete/${item.id}`)
+        await http.delete(`${process.env.VUE_APP_API}/api/product/delete/${this.deleteItem.id}`)
         await this.getProductList();
         this.$toast("Delete successfully", true);
       } catch (error) {
         this.$toast("Delete failure", false);
+      } finally {
+        this.showDeleteModal = false;
       }
+    },
+    onCloseDeleteModal(){
+      this.showDeleteModal = false;
     },
     onCloseModal() {
       this.mode = "";

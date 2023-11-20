@@ -129,6 +129,43 @@
       ref="listProductModal"
       @addBestSellerItem="onAddBestSellerSuccess"
     />
+    <div
+            v-if="showDeleteModal"
+            class="modal"
+            id="staticBackdrop"
+            data-bs-backdrop="static"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content" style="min-width: 500px">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                    Delete Confirm
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  Do you want to delete?
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    @click="onCloseDeleteModal"
+                  >
+                    Close
+                  </button>
+                  <button type="submit" class="btn btn-primary" @click="onConfirmDelete">
+                    Confirm
+                  </button>
+                </div>
+              </div>
+            </div>
+        </div>
   </div>
 </template>
   
@@ -160,7 +197,9 @@ export default {
         currentPage: 1,
       },
       showModal: false,
-      searchText: ''
+      searchText: '',
+      showDeleteModal: false,
+      deleteItem: {}
     };
   },
   async mounted() {
@@ -186,10 +225,25 @@ export default {
       this.getProductList()
     },
     async removeProductBestSeller(pid) {
-      await removeBestSellerTagApi(pid);
-      this.getProductList();
-      this.$toast("Remove Product Successfully!");
+      this.deleteItem = pid;
+      this.showDeleteModal = true;
+      
     },
+     
+    async onConfirmDelete() {
+        try {
+          await removeBestSellerTagApi(this.deleteItem);
+          this.getProductList();
+          this.$toast("Remove Product Successfully!");
+        } catch (error) {
+          this.$toast("Delete failure", false);
+        } finally {
+          this.showDeleteModal = false;
+        }
+      },
+      onCloseDeleteModal() {
+        this.showDeleteModal = false;
+      },
     onChangePage(direction) {
       let { currentPage, totalPage } = this.pagination;
       if (direction === "next") {

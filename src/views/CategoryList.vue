@@ -188,6 +188,44 @@
         </div>
       </div>
     </div>
+
+    <div
+              v-if="showDeleteModal"
+              class="modal"
+              id="staticBackdrop"
+              data-bs-backdrop="static"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content" style="min-width: 500px">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                      Delete Confirm
+                    </h1>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    Do you want to delete?
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      @click="onCloseDeleteModal"
+                    >
+                      Close
+                    </button>
+                    <button type="submit" class="btn btn-primary" @click="onConfirmDelete">
+                      Confirm
+                    </button>
+                  </div>
+                </div>
+              </div>
+          </div>
   </div>
 </template>
 
@@ -224,7 +262,9 @@ export default {
       },
       categories: [],
       headers: ["Category Name", "Description", "Status", "Action"],
-      searchText: ''
+      searchText: '',
+      showDeleteModal: false,
+      deleteItem: null
     };
   },
   validations() {
@@ -274,9 +314,22 @@ export default {
       }
     },
     async onDelete(id) {
-      await deleteCategory(id);
-      await this.getAllCategory();
-      this.$toast("Delete successfully", true);
+      this.deleteItem = id;
+      this.showDeleteModal = true;
+    },
+    async onConfirmDelete() {
+      try {
+        await deleteCategory(this.deleteItem);
+        await this.getAllCategory();
+        this.$toast("Delete successfully", true);
+      } catch (error) {
+        this.$toast("Delete failure", false);
+      } finally {
+        this.showDeleteModal = false;
+      }
+    },
+    onCloseDeleteModal() {
+      this.showDeleteModal = false;
     },
     onEdit(item) {
       this.formData = Object.assign({}, item);
