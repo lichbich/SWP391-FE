@@ -239,7 +239,7 @@ export default {
     },
     getProductName(data){
       console.log(data)
-      return data.product_orders.map(item => item.product?.pName).join(',').toString();
+      return data.product_orders.map(item => `${item.quantity} x ${item.product?.pName}`).join(',').toString();
     }
   },
 };
