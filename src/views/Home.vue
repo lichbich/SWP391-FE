@@ -2,7 +2,7 @@
   <div class="main-container">
     <div class="container main-area">
       <div class="category-area">
-        <div class="title">Catregory</div>
+        <div class="title">Category</div>
         <ul class="list-category">
           <li
             class="category-item"
@@ -133,8 +133,9 @@
               </div>
               <div class="product-information">
                 <div class="p-container">
-                  <div class="p-title">{{ productDetail.pName }}</div>
-                  <div class="p-price">{{ productDetail.price }}</div>
+                  <div class="p-title">Name: {{ productDetail.pName }}</div>
+                    <div class="p-price">Price: {{ productDetail.price }}$</div>
+                    <div class="p-quantity">Quantity: {{ productDetail.pQuantity }}</div>
                   <div class="p-detail">
                     <b>Product Details :</b>
                     <p style="font-size: 14px">

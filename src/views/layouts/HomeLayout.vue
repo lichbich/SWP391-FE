@@ -138,10 +138,12 @@ export default {
       localStorage.clear();
     },
     onSearch() {
-      this.$router.push({
-        path: "/search",
-        query: { search: this.searchText },
-      });
+      if (this.searchText.trim() !== "") {
+        this.$router.push({
+          path: "/search",
+          query: { search: this.searchText },
+        });
+      }
     },
   },
 };

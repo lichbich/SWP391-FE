@@ -24,15 +24,20 @@
                     v-bind:key="order"
                     :id="order.id"
                   >
-                    <td style="width: 200px">
+                  <td style="max-width: 200px" class="tooltip-custom">
+                    <span class="text-secondary text-xs font-weight-bold" data-bs-toggle="tooltip" :title="getProductName(order)">{{
+                      getProductName(order)
+                    }}</span>    
+                  </td>  
+                  <td style="width: 200px">
                       <p class="text-left text-xs font-weight-bold mb-0">
                         {{ order.user.u_name }}
                       </p>
                     </td>
-                    <td style="width: 300px">
-                      <p class="text-left text-xs font-weight-bold mb-0">
-                        {{ order.o_address }}
-                      </p>
+                    <td style="max-width: 200px" class="tooltip-custom">
+                      <span class="text-secondary text-xs font-weight-bold" data-bs-toggle="tooltip" :title="order.o_address">{{
+                        order.o_address
+                      }}</span>
                     </td>
                     <td style="width: 150px" class="text-center">
                       <p class="text-left text-xs font-weight-bold mb-0">
@@ -144,6 +149,7 @@ export default {
   data() {
     return {
       headers: [
+        "Product",
         "Receiver",
         "Address",
         "Phone",
@@ -231,6 +237,10 @@ export default {
         return total + nextProduct.price;
       }, 0);
     },
+    getProductName(data){
+      console.log(data)
+      return data.product_orders.map(item => item.product?.pName).join(',').toString();
+    }
   },
 };
 </script>

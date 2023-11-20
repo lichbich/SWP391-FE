@@ -138,7 +138,7 @@ export default {
       this.v$.$reset();
     },
     show() {
-      this.formData.address = this.userInfo?.u_email;
+      this.formData.address = '';
       this.formData.phoneNumber = this.userInfo?.u_phone;
       this.showModal = true;
     },
